@@ -1,0 +1,72 @@
+const NIVEAU_17_DATA = {
+  "niveau": 17,
+  "nom": "Subjonctif Passé",
+  "couleur": "#a855f7",
+  "questions": {
+    "total": 20,
+    "etapes": [
+      { "avantMilieu": 10 },
+      { "apresMilieu": 10 }
+    ]
+  },
+  "dialogues": {
+    "defi": "Il a fallu que tu aies osé m'affronter pour que tu découvres l'ultime douleur !",
+    "milieu_combat": "Je doute que tu aies jamais rencontré pareille puissance !",
+    "victoire_joueur": "Incroyable... Tu as vaincu avant que j'aie pu déployer ma pleine force...",
+    "defaite_joueur": "Il faut que tu aies étudié davantage !"
+  },
+  "attaques": [
+    { "id": 1, "incantation": "Bien que je {VERBE} ce monstre...", "verbe": "vaincre", "personne": "je", "temps": "Subjonctif passé", "solution": "aie vaincu", "difficulte": "Avoir + vaincu" },
+    { "id": 2, "incantation": "Je doute que tu {VERBE} l'épreuve.", "verbe": "réussir", "personne": "tu", "temps": "Subjonctif passé", "solution": "aies réussi", "difficulte": "Avoir + réussi" },
+    { "id": 3, "incantation": "Pourvu que nous {VERBE} à temps !", "verbe": "venir", "personne": "nous", "temps": "Subjonctif passé", "solution": "soyons venus", "difficulte": "Être + venus (accord)" },
+    { "id": 4, "incantation": "Avant que vous {VERBE} du combat...", "verbe": "partir", "personne": "vous", "temps": "Subjonctif passé", "solution": "soyez partis", "difficulte": "Être + partis (accord)" },
+    { "id": 5, "incantation": "Quoique ils {VERBE} du courage...", "verbe": "avoir", "personne": "ils", "temps": "Subjonctif passé", "solution": "aient eu", "difficulte": "Avoir + eu" },
+    { "id": 6, "incantation": "Il est possible que je {VERBE} là-bas.", "verbe": "être", "personne": "je", "temps": "Subjonctif passé", "solution": "aie été", "difficulte": "Avoir + été" },
+    { "id": 7, "incantation": "Bien que tu {VERBE} au temple...", "verbe": "aller", "personne": "tu", "temps": "Subjonctif passé", "solution": "sois allé", "difficulte": "Être + allé" },
+    { "id": 8, "incantation": "Je ne crois pas qu'elle {VERBE} la leçon.", "verbe": "comprendre", "personne": "elle", "temps": "Subjonctif passé", "solution": "ait compris", "difficulte": "Avoir + compris" },
+    { "id": 9, "incantation": "Encore que nous {VERBE} l'effort...", "verbe": "faire", "personne": "nous", "temps": "Subjonctif passé", "solution": "ayons fait", "difficulte": "Avoir + fait" },
+    { "id": 10, "incantation": "Quoique vous {VERBE} intervenir...", "verbe": "pouvoir", "personne": "vous", "temps": "Subjonctif passé", "solution": "ayez pu", "difficulte": "Avoir + pu" },
+    { "id": 11, "incantation": "Bien que tu {VERBE} la vérité...", "verbe": "savoir", "personne": "tu", "temps": "Subjonctif passé", "solution": "aies su", "difficulte": "Avoir + su" },
+    { "id": 12, "incantation": "Pourvu qu'il {VERBE} nous aider !", "verbe": "vouloir", "personne": "il", "temps": "Subjonctif passé", "solution": "ait voulu", "difficulte": "Avoir + voulu" },
+    { "id": 13, "incantation": "Je regrette que nous {VERBE} cette potion.", "verbe": "boire", "personne": "nous", "temps": "Subjonctif passé", "solution": "ayons bu", "difficulte": "Avoir + bu" },
+    { "id": 14, "incantation": "Avant que vous {VERBE} ce grimoire...", "verbe": "lire", "personne": "vous", "temps": "Subjonctif passé", "solution": "ayez lu", "difficulte": "Avoir + lu" },
+    { "id": 15, "incantation": "Quoique les prophètes {VERBE}...", "verbe": "dire", "personne": "ils", "temps": "Subjonctif passé", "solution": "aient dit", "difficulte": "Avoir + dit" },
+    { "id": 16, "incantation": "Bien que je te {VERBE}...", "verbe": "croire", "personne": "je", "temps": "Subjonctif passé", "solution": "aie cru", "difficulte": "Avoir + cru" },
+    { "id": 17, "incantation": "Il est possible que tu {VERBE} ce mage.", "verbe": "connaître", "personne": "tu", "temps": "Subjonctif passé", "solution": "aies connu", "difficulte": "Avoir + connu" },
+    { "id": 18, "incantation": "Pourvu qu'elle {VERBE} avant la nuit !", "verbe": "mourir", "personne": "elle", "temps": "Subjonctif passé", "solution": "soit morte", "difficulte": "Être + morte (accord)" },
+    { "id": 19, "incantation": "Bien que nous {VERBE} la porte...", "verbe": "ouvrir", "personne": "nous", "temps": "Subjonctif passé", "solution": "ayons ouvert", "difficulte": "Avoir + ouvert" },
+    { "id": 20, "incantation": "Je doute que vous {VERBE} cette vision.", "verbe": "voir", "personne": "vous", "temps": "Subjonctif passé", "solution": "ayez vu", "difficulte": "Avoir + vu" },
+    { "id": 21, "incantation": "Encore que je {VERBE} mes erreurs...", "verbe": "admettre", "personne": "je", "temps": "Subjonctif passé", "solution": "aie admis", "difficulte": "Avoir + admis" },
+    { "id": 22, "incantation": "Bien que tu {VERBE} ton destin...", "verbe": "accepter", "personne": "tu", "temps": "Subjonctif passé", "solution": "aies accepté", "difficulte": "Avoir + accepté" },
+    { "id": 23, "incantation": "Pourvu qu'il {VERBE} ses vœux !", "verbe": "accomplir", "personne": "il", "temps": "Subjonctif passé", "solution": "ait accompli", "difficulte": "Avoir + accompli" },
+    { "id": 24, "incantation": "Avant que nous {VERBE} la sentence...", "verbe": "prononcer", "personne": "nous", "temps": "Subjonctif passé", "solution": "ayons prononcé", "difficulte": "Avoir + prononcé" },
+    { "id": 25, "incantation": "Quoique vous {VERBE} vos forces...", "verbe": "épuiser", "personne": "vous", "temps": "Subjonctif passé", "solution": "ayez épuisé", "difficulte": "Avoir + épuisé" }
+  ],
+  "defenses": [
+    { "id": 1, "question": "Comment se forme le subjonctif passé ?", "choix": ["Auxiliaire au subjonctif présent + participe passé", "Auxiliaire au subjonctif imparfait + participe passé", "Auxiliaire au présent + participe passé", "Verbe au subjonctif présent"], "solution": 0 },
+    { "id": 2, "question": "Subjonctif passé de 'être' à la 1re personne du singulier :", "choix": ["je sois", "j'aie été", "je fusse", "je serais"], "solution": 1 },
+    { "id": 3, "question": "Subjonctif passé de 'avoir' à la 2e personne du pluriel :", "choix": ["vous avez", "vous ayez", "vous ayez eu", "vous auriez"], "solution": 2 },
+    { "id": 4, "question": "Quelle est la valeur du subjonctif passé par rapport au subjonctif présent ?", "choix": ["Il exprime une action antérieure ou accomplie", "Il exprime une action future", "Il exprime une action simultanée", "Il exprime un ordre"], "solution": 0 },
+    { "id": 5, "question": "Subjonctif passé de 'aller' à la 3e personne du singulier (féminin) :", "choix": ["elle aille", "elle soit allée", "elle est allée", "elle irait"], "solution": 1 },
+    { "id": 6, "question": "Subjonctif passé de 'faire' à la 1re personne du pluriel :", "choix": ["nous fassions", "nous ayons fait", "nous faisions", "nous ferions"], "solution": 1 },
+    { "id": 7, "question": "Dans 'Bien que tu ______ (partir)', quelle forme est correcte au subjonctif passé ?", "choix": ["partes", "sois parti", "étais parti", "serais parti"], "solution": 1 },
+    { "id": 8, "question": "Subjonctif passé de 'venir' à la 2e personne du pluriel :", "choix": ["vous veniez", "vous soyez venus", "vous vîntes", "vous viendriez"], "solution": 1 },
+    { "id": 9, "question": "Avec l'auxiliaire 'être' au subjonctif passé, le participe passé s'accorde :", "choix": ["Toujours avec le sujet", "Jamais", "Avec le complément d'objet", "Parfois, selon le verbe"], "solution": 0 },
+    { "id": 10, "question": "Subjonctif passé de 'savoir' à la 3e personne du pluriel :", "choix": ["ils sachent", "ils aient su", "ils savaient", "ils sauraient"], "solution": 1 },
+    { "id": 11, "question": "Quel auxiliaire utilise le verbe 'monter' au subjonctif passé dans 'Je doute qu'il ______ au sommet' ?", "choix": ["ait monté", "soit monté", "est monté", "a monté"], "solution": 1 },
+    { "id": 12, "question": "Subjonctif passé de 'vouloir' à la 1re personne du singulier :", "choix": ["je veuille", "j'aie voulu", "je voulusse", "je voudrais"], "solution": 1 },
+    { "id": 13, "question": "Dans la phrase 'Il est possible qu'elle ______ (naître) hier', quelle forme convient ?", "choix": ["naisse", "soit née", "est née", "naîtrait"], "solution": 1 },
+    { "id": 14, "question": "Subjonctif passé de 'pouvoir' à la 2e personne du singulier :", "choix": ["tu puisses", "tu aies pu", "tu pouvais", "tu pourrais"], "solution": 1 },
+    { "id": 15, "question": "Quelle est la différence entre 'Je doute qu'il vienne' et 'Je doute qu'il soit venu' ?", "choix": ["L'un est présent, l'autre est passé", "L'un est certain, l'autre incertain", "L'un est poli, l'autre impoli", "Aucune différence"], "solution": 0 },
+    { "id": 16, "question": "Subjonctif passé de 'mourir' à la 3e personne du pluriel (féminin) :", "choix": ["elles meurent", "elles soient mortes", "elles sont mortes", "elles mourraient"], "solution": 1 },
+    { "id": 17, "question": "Après 'avant que', on utilise généralement :", "choix": ["le subjonctif présent", "le subjonctif passé", "l'indicatif", "le conditionnel"], "solution": 1 },
+    { "id": 18, "question": "Subjonctif passé de 'recevoir' à la 1re personne du pluriel :", "choix": ["nous recevions", "nous ayons reçu", "nous reçussions", "nous recevrions"], "solution": 1 },
+    { "id": 19, "question": "Quel temps composé du subjonctif exprime l'antériorité dans le passé ?", "choix": ["Subjonctif passé", "Subjonctif plus-que-parfait", "Subjonctif imparfait", "Conditionnel passé"], "solution": 1 },
+    { "id": 20, "question": "Subjonctif passé de 'prendre' à la 2e personne du pluriel :", "choix": ["vous preniez", "vous ayez pris", "vous prissiez", "vous prendriez"], "solution": 1 },
+    { "id": 21, "question": "Dans 'Bien que nous ______ (se lever) tôt', la forme correcte est :", "choix": ["nous levions", "nous soyons levés", "nous sommes levés", "nous serions levés"], "solution": 1 },
+    { "id": 22, "question": "Subjonctif passé de 'devoir' à la 3e personne du singulier :", "choix": ["il doive", "il ait dû", "il devait", "il devrait"], "solution": 1 },
+    { "id": 23, "question": "Quelle conjonction est souvent suivie du subjonctif passé ?", "choix": ["parce que", "bien que", "puisque", "car"], "solution": 1 },
+    { "id": 24, "question": "Subjonctif passé de 'ouvrir' à la 1re personne du singulier :", "choix": ["j'ouvre", "j'aie ouvert", "j'ouvrisse", "j'ouvrirais"], "solution": 1 },
+    { "id": 25, "question": "Dans 'Il regrette que vous ______ (partir) si tôt', la forme correcte est :", "choix": ["partez", "soyez partis", "étiez partis", "seriez partis"], "solution": 1 }
+  ]
+};

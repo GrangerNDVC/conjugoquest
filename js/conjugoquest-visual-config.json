@@ -1,0 +1,169 @@
+{
+  "levels": {
+    "1": {
+      "name": "Présent",
+      "projectile": {
+        "size": 30,
+        "shape": "circle",
+        "colors": [
+          "#4169E1",
+          "#1E90FF"
+        ],
+        "glowColor": "#4169E1",
+        "speed": 1,
+        "count": 1
+      },
+      "circle": {
+        "size": 450,
+        "ringCount": 4,
+        "ringStyle": "dashed",
+        "colors": [
+          "rgba(100, 149, 237, 0.9)",
+          "rgba(65, 105, 225, 0.85)",
+          "rgba(135, 206, 250, 0.9)",
+          "rgba(70, 130, 180, 0.8)"
+        ],
+        "centerColor": "rgba(100, 149, 237, 0.4)",
+        "rotationSpeed": 8,
+        "particleColor": "rgba(100, 149, 237, 1)",
+        "particleCount": 5
+      },
+      "enemy": {
+        "projectile": {
+          "size": 25,
+          "shape": "circle",
+          "colors": [
+            "#DC143C",
+            "#FF4500"
+          ],
+          "glowColor": "#DC143C",
+          "speed": 1.2
+        }
+      }
+    },
+    "2": {
+      "name": "Passé Composé",
+      "projectile": {
+        "size": 35,
+        "shape": "circle",
+        "colors": [
+          "#8b5cf6",
+          "#a78bfa"
+        ],
+        "glowColor": "#8b5cf6",
+        "speed": 1.1,
+        "count": 1
+      },
+      "circle": {
+        "size": 450,
+        "ringCount": 4,
+        "ringStyle": "dotted",
+        "colors": [
+          "rgba(139, 92, 246, 0.9)",
+          "rgba(124, 58, 237, 0.85)",
+          "rgba(167, 139, 250, 0.9)",
+          "rgba(109, 40, 217, 0.8)"
+        ],
+        "centerColor": "rgba(139, 92, 246, 0.4)",
+        "rotationSpeed": 7,
+        "particleColor": "rgba(139, 92, 246, 1)",
+        "particleCount": 5
+      },
+      "enemy": {
+        "projectile": {
+          "size": 28,
+          "shape": "triangle",
+          "colors": [
+            "#DC143C",
+            "#FF4500"
+          ],
+          "glowColor": "#DC143C",
+          "speed": 1.3
+        }
+      }
+    },
+    "3": {
+      "name": "Imparfait",
+      "projectile": {
+        "size": 40,
+        "shape": "circle",
+        "colors": [
+          "#6366f1",
+          "#818cf8"
+        ],
+        "glowColor": "#6366f1",
+        "speed": 1,
+        "count": 2
+      },
+      "circle": {
+        "size": 450,
+        "ringCount": 4,
+        "ringStyle": "dashed",
+        "colors": [
+          "rgba(99, 102, 241, 0.9)",
+          "rgba(79, 70, 229, 0.85)",
+          "rgba(129, 140, 248, 0.9)",
+          "rgba(67, 56, 202, 0.8)"
+        ],
+        "centerColor": "rgba(99, 102, 241, 0.4)",
+        "rotationSpeed": 6,
+        "particleColor": "rgba(99, 102, 241, 1)",
+        "particleCount": 6
+      },
+      "enemy": {
+        "projectile": {
+          "size": 30,
+          "shape": "circle",
+          "colors": [
+            "#DC143C",
+            "#FF4500"
+          ],
+          "glowColor": "#DC143C",
+          "speed": 1.4
+        }
+      }
+    },
+    "4": {
+      "name": "Futur",
+      "projectile": {
+        "size": 45,
+        "shape": "star",
+        "colors": [
+          "#0ea5e9",
+          "#38bdf8"
+        ],
+        "glowColor": "#0ea5e9",
+        "speed": 0.9,
+        "count": 1
+      },
+      "circle": {
+        "size": 450,
+        "ringCount": 5,
+        "ringStyle": "solid",
+        "colors": [
+          "rgba(14, 165, 233, 0.9)",
+          "rgba(2, 132, 199, 0.85)",
+          "rgba(56, 189, 248, 0.9)",
+          "rgba(3, 105, 161, 0.8)",
+          "rgba(125, 211, 252, 0.7)"
+        ],
+        "centerColor": "rgba(14, 165, 233, 0.4)",
+        "rotationSpeed": 5,
+        "particleColor": "rgba(14, 165, 233, 1)",
+        "particleCount": 8
+      },
+      "enemy": {
+        "projectile": {
+          "size": 32,
+          "shape": "flame",
+          "colors": [
+            "#DC143C",
+            "#FF4500"
+          ],
+          "glowColor": "#DC143C",
+          "speed": 1.5
+        }
+      }
+    }
+  }
+}

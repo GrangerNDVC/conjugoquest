@@ -1,0 +1,144 @@
+/* ===========================
+   LOGIN.CSS
+   =========================== */
+
+#login-container {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #0a0f1e 0%, #1a1f2e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+}
+
+.login-card {
+    background: rgba(0, 0, 0, 0.8);
+    border: 3px solid #8B4513;
+    border-radius: 20px;
+    padding: 50px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    animation: cardAppear 0.8s ease-out;
+}
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-card h1 {
+    text-align: center;
+    color: #FFD700;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    letter-spacing: 2px;
+}
+
+.login-card h2 {
+    text-align: center;
+    color: #e8dcc4;
+    font-size: 1.3em;
+    margin-bottom: 30px;
+    font-weight: normal;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    color: #FFD700;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    font-family: 'Cinzel', serif;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #8B4513;
+    border-radius: 8px;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #FFD700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-connexion {
+    width: 100%;
+    padding: 18px;
+    font-size: 1.3em;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    background: linear-gradient(145deg, #c8a871 0%, #a88a5f 100%);
+    border: 3px solid #6b5638;
+    border-radius: 10px;
+    color: #2d2416;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 20px;
+    letter-spacing: 2px;
+}
+
+.btn-connexion:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(200, 168, 113, 0.5);
+}
+
+.btn-connexion:active {
+    transform: translateY(0);
+}
+
+.login-footer {
+    margin-top: 30px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.9em;
+}
+
+.login-footer .version {
+    margin-top: 10px;
+    color: #4a5568;
+}
+
+.message {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+.message.error {
+    background: rgba(255, 0, 0, 0.2);
+    border: 2px solid #ff4444;
+    color: #ff9999;
+}
+
+.message.success {
+    background: rgba(0, 255, 0, 0.2);
+    border: 2px solid #4CAF50;
+    color: #a5d6a7;
+}

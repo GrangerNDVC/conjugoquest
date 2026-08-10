@@ -1,0 +1,702 @@
+/* ===========================
+   CONJUGO QUEST - MODE DUEL
+   =========================== */
+
+#duel-container {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #fff;
+    font-family: 'Cinzel', serif;
+    overflow: hidden;
+}
+
+.phase {
+    display: none !important;
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+}
+
+.phase.active {
+    display: flex !important;
+    flex-direction: column;
+}
+
+/* ===========================
+   MODE SELECT
+   =========================== */
+
+.duel-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.duel-header h1 {
+    font-size: 3em;
+    color: #FFD700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    margin-bottom: 10px;
+}
+
+.unlocked-levels {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.unlocked-levels h2 {
+    color: #FFD700;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.level-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.level-btn {
+    padding: 10px;
+    border: 2px solid;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.level-btn.unlocked {
+    border-color: #10b981;
+    color: #fff;
+}
+
+.level-btn.locked {
+    border-color: #6b7280;
+    color: #6b7280;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.level-number {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.mode-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.btn-mode {
+    flex: 1;
+    max-width: 300px;
+    padding: 30px 20px;
+    border: 3px solid;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-mode:not(:disabled) {
+    border-color: #FFD700;
+}
+
+.btn-mode:not(:disabled):hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+}
+
+.btn-mode .icon {
+    font-size: 3em;
+}
+
+.btn-mode .text {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.btn-mode .desc {
+    font-size: 0.9em;
+    color: #94a3b8;
+}
+
+.btn-mode .lock {
+    margin-top: 10px;
+    color: #ef4444;
+    font-size: 0.9em;
+}
+
+.btn-mode:disabled {
+    border-color: #4a5568;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===========================
+   CRÉATION/REJOINDRE
+   =========================== */
+
+.duel-config, .join-config {
+    max-width: 600px;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 40px;
+    border-radius: 20px;
+    border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.config-group {
+    margin-bottom: 25px;
+}
+
+.config-group label {
+    display: block;
+    color: #FFD700;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.config-group select, .config-group input {
+    width: 100%;
+    padding: 12px;
+    font-family: 'Cinzel', serif;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #8B4513;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1em;
+}
+
+.character-select {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.character-option {
+    flex: 1;
+    padding: 20px;
+    border: 3px solid transparent;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.character-option img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.character-option.selected {
+    border-color: #FFD700;
+    background: rgba(255, 215, 0, 0.1);
+    transform: scale(1.05);
+}
+
+.visual-preview {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+.btn-create, .btn-join {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    background: linear-gradient(145deg, #FFD700, #FFA500);
+    border: none;
+    border-radius: 10px;
+    color: #2d2416;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 20px;
+}
+
+.btn-create:hover, .btn-join:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5);
+}
+
+.room-code {
+    margin-top: 30px;
+    text-align: center;
+    animation: fadeIn 0.5s;
+}
+
+.code-display {
+    font-size: 4em;
+    font-weight: bold;
+    color: #FFD700;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    letter-spacing: 10px;
+    margin: 20px 0;
+    border: 2px dashed #FFD700;
+}
+
+.waiting-message {
+    margin-top: 20px;
+    color: #94a3b8;
+    animation: pulse 2s infinite;
+}
+
+.code-input {
+    text-align: center;
+    font-size: 2em;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+}
+
+/* ===========================
+   COMBAT DUEL
+   =========================== */
+
+.vs-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+
+.player-info img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid #FFD700;
+}
+
+.player-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.player-stats {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.vs-divider {
+    font-size: 2em;
+    color: #FFD700;
+    margin: 0 20px;
+}
+
+.health-bars {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.health-bar-container {
+    flex: 1;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 3px solid #8B4513;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.health-bar-container.player1 .health-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #45a049);
+    width: 100%;
+    transition: width 0.3s;
+}
+
+.health-bar-container.player2 .health-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff4444, #cc0000);
+    width: 100%;
+    transition: width 0.3s;
+}
+
+.timer-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.timer {
+    display: inline-block;
+    font-size: 3em;
+    font-weight: bold;
+    color: #FFD700;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 40px;
+    border-radius: 50px;
+    border: 3px solid #FFD700;
+}
+
+.characters {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 50px;
+}
+
+.character {
+    width: 150px;
+    height: 150px;
+    transition: all 0.3s;
+}
+
+.character.hit {
+    animation: hitFlash 0.5s;
+}
+
+@keyframes hitFlash {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.5) drop-shadow(0 0 20px red); }
+}
+
+.question-zone {
+    max-width: 600px;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 30px;
+    border-radius: 20px;
+    border: 3px solid #8B4513;
+}
+
+.question-info {
+    text-align: center;
+    font-size: 1.5em;
+    color: #FFD700;
+    margin-bottom: 20px;
+}
+
+.answer-zone {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.answer-zone input {
+    flex: 1;
+    padding: 15px;
+    font-size: 1.2em;
+    font-family: 'Cinzel', serif;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #8B4513;
+    border-radius: 8px;
+    color: #fff;
+}
+
+.answer-zone input:focus {
+    outline: none;
+    border-color: #FFD700;
+}
+
+#btn-duel-answer {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    background: linear-gradient(145deg, #FFD700, #FFA500);
+    border: none;
+    border-radius: 8px;
+    color: #2d2416;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#btn-duel-answer:hover {
+    transform: scale(1.05);
+}
+
+.opponent-status {
+    text-align: center;
+    color: #94a3b8;
+    font-style: italic;
+}
+
+.duel-feedback {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+    z-index: 1000;
+    animation: feedbackPop 0.5s;
+}
+
+@keyframes feedbackPop {
+    0% { transform: translate(-50%, -50%) scale(0); }
+    80% { transform: translate(-50%, -50%) scale(1.2); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+.duel-result {
+    text-align: center;
+    animation: fadeIn 0.5s;
+}
+
+.duel-result h2 {
+    font-size: 3em;
+    color: #FFD700;
+    margin-bottom: 30px;
+}
+
+.result-stats {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    font-size: 1.2em;
+    line-height: 2;
+}
+
+.btn-rematch, .btn-exit {
+    padding: 15px 40px;
+    font-size: 1.2em;
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 0 10px;
+}
+
+.btn-rematch {
+    background: linear-gradient(145deg, #4CAF50, #45a049);
+    color: white;
+}
+
+.btn-exit {
+    background: linear-gradient(145deg, #ff4444, #cc0000);
+    color: white;
+}
+
+.btn-rematch:hover, .btn-exit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* ===========================
+   ARÈNE
+   =========================== */
+
+.arena-config {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.config-panel {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 20px;
+    border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.config-panel h3 {
+    color: #FFD700;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.visual-editor-mini {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.color-picker {
+    margin-bottom: 15px;
+}
+
+.color-picker input[type="color"] {
+    width: 100%;
+    height: 40px;
+    background: transparent;
+    border: 2px solid #8B4513;
+    border-radius: 5px;
+}
+
+.slider {
+    margin-bottom: 15px;
+}
+
+.slider input[type="range"] {
+    width: 100%;
+}
+
+.preview-panel {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 20px;
+    border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.preview-panel h3 {
+    color: #FFD700;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.arena-preview {
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+}
+
+.arena-preview-circle {
+    animation: spin 8s linear infinite;
+}
+
+.btn-create-arena {
+    width: 100%;
+    padding: 20px;
+    font-size: 1.3em;
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    background: linear-gradient(145deg, #FFD700, #FFA500);
+    border: none;
+    border-radius: 10px;
+    color: #2d2416;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 20px;
+}
+
+.btn-create-arena:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 30px rgba(255, 215, 0, 0.5);
+}
+
+/* ===========================
+   ANIMATIONS
+   =========================== */
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ===========================
+   BOUTONS
+   =========================== */
+
+.btn-retour {
+    position: fixed;
+    bottom: 40px;
+    left: 40px;
+    padding: 12px 25px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #8B4513;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Cinzel', serif;
+    font-size: 1em;
+}
+
+.btn-retour:hover {
+    background: rgba(139, 69, 19, 0.5);
+    transform: translateX(-5px);
+}
+
+.btn-copy {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #FFD700;
+    border-radius: 5px;
+    color: #FFD700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.btn-copy:hover {
+    background: rgba(255, 215, 0, 0.2);
+}
+
+/* ===========================
+   RESPONSIVE
+   =========================== */
+
+@media (max-width: 768px) {
+    .mode-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .arena-config {
+        grid-template-columns: 1fr;
+    }
+    
+    .vs-banner {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .answer-zone {
+        flex-direction: column;
+    }
+    
+    .character-select {
+        flex-direction: column;
+    }
+}

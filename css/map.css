@@ -1,0 +1,461 @@
+/* ===========================
+   CONJUGO QUEST - PLATEAU AVEC PORTAILS
+   =========================== */
+
+#carte-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    /* Image de fond */
+    background-image: url('../img/map/map.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    /* Couleur de secours si l'image ne charge pas */
+    background-color: #0f172a;
+}
+
+#plateau {
+    position: relative;
+    width: 3200px;
+    height: 2800px;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+/* ===========================
+   TOURS
+   =========================== */
+
+.tour-container {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+/* Rendre les tours futures invisibles */
+.tour-container.invisible {
+    display: none !important;
+}
+
+/* Image de la tour */
+.tour-image {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    border-radius: 20px;
+    background: transparent;
+    padding: 10px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+/* Tour actuelle (celle où se trouve le héros) */
+.tour-container.actuelle .tour-image {
+    border: none;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Tour complétée */
+.tour-container.complete .tour-image {
+    border: none;
+    opacity: 0.8;
+}
+
+/* Tour verrouillée */
+.tour-container.verrouille {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.tour-container.verrouille .tour-image {
+    filter: grayscale(100%);
+    border: none;
+}
+
+/* Hover effect */
+.tour-container:not(.verrouille):hover .tour-image {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Nom de la tour */
+.nom-tour {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.tour-container:hover .nom-tour {
+    opacity: 1;
+}
+
+/* ===========================
+   CHEMIN
+   =========================== */
+
+.dalle-chemin {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.dalle-complete {
+    background: #3a2820;
+    box-shadow: 0 0 8px #3a2820;
+}
+
+.dalle-actuelle {
+    background: #f59e0b;
+    box-shadow: 0 0 12px #f59e0b;
+    animation: sparkle 1.5s infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}
+
+.dalle-future {
+    background: #64748b;
+    opacity: 0.5;
+}
+
+/* ===========================
+   HÉROS
+   =========================== */
+
+#hero-chibi {
+    position: absolute;
+    width: 70px;
+    height: auto;
+    z-index: 1000;
+    transition: all 0.6s ease;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+    pointer-events: none;
+}
+
+#hero-chibi.marche {
+    animation: bounce 0.5s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* ===========================
+   INTERFACE
+   =========================== */
+
+#map-ui {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2000;
+    pointer-events: none;
+}
+
+#map-ui > * {
+    pointer-events: auto;
+}
+
+.ui-top {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f59e0b;
+}
+
+.ui-top h2 {
+    color: white;
+    margin: 0;
+    font-size: 1.4em;
+}
+
+.stats {
+    display: flex;
+    gap: 24px;
+    color: white;
+    font-size: 1.1em;
+}
+
+#btn-retour-menu {
+    position: fixed;
+    bottom: 32px;
+    left: 32px;
+    padding: 12px 24px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #f59e0b;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 2000;
+}
+
+#btn-retour-menu:hover {
+    background: rgba(245, 158, 11, 0.2);
+    transform: translateY(-2px);
+}
+
+/* ===========================
+   PORTAILS DUEL ET ARÈNE
+   =========================== */
+
+.portail-duel, .portail-arena {
+    position: absolute;
+    cursor: pointer;
+    z-index: 50;
+    transition: all 0.3s ease;
+}
+
+.portail-duel {
+    width: 70px;
+    height: 70px;
+    animation: portailFloat 3s ease-in-out infinite;
+}
+
+.portail-arena {
+    width: 100px;
+    height: 100px;
+    animation: portailFloat 2.5s ease-in-out infinite, portailRotate 8s linear infinite;
+}
+
+@keyframes portailFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes portailRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.portail-anneau {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 4px solid #f43f5e;
+    border-radius: 50%;
+    box-shadow: 0 0 30px #f43f5e, inset 0 0 20px #f43f5e;
+    animation: portailPulse 2s ease-in-out infinite;
+}
+
+.portail-anneau.interne {
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+    border-width: 3px;
+    border-color: #fbbf24;
+    box-shadow: 0 0 40px #fbbf24, inset 0 0 30px #fbbf24;
+    animation: portailPulse 1.5s ease-in-out infinite reverse;
+}
+
+.portail-anneau.arena {
+    border-color: #fbbf24;
+    box-shadow: 0 0 50px #fbbf24, inset 0 0 30px #fbbf24;
+    border-width: 6px;
+}
+
+.portail-anneau.interne.arena {
+    border-color: #ff6b35;
+    box-shadow: 0 0 60px #ff6b35, inset 0 0 40px #ff6b35;
+}
+
+@keyframes portailPulse {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% { 
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+.portail-icone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+    z-index: 10;
+    text-shadow: 0 0 20px currentColor;
+    animation: iconePulse 1.5s ease-in-out infinite;
+}
+
+.portail-arena .portail-icone {
+    font-size: 3em;
+}
+
+@keyframes iconePulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.2); }
+}
+
+.portail-tooltip {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #fbbf24;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    white-space: nowrap;
+    border: 2px solid #f43f5e;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.portail-arena .portail-tooltip {
+    border-color: #fbbf24;
+    color: #ff6b35;
+    font-weight: bold;
+    font-size: 0.9em;
+    padding: 8px 20px;
+}
+
+.portail-duel:hover .portail-tooltip,
+.portail-arena:hover .portail-tooltip {
+    opacity: 1;
+}
+
+.portail-duel:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 30px #f43f5e);
+}
+
+.portail-arena:hover {
+    transform: scale(1.3);
+    filter: drop-shadow(0 0 50px #fbbf24);
+}
+
+/* ===========================
+   ANIMATIONS SUPPLÉMENTAIRES
+   =========================== */
+
+@keyframes glowPulse {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.3); }
+}
+
+.portail-duel::after,
+.portail-arena::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(244, 63, 94, 0.3) 0%, transparent 70%);
+    z-index: -1;
+    animation: glowPulse 2s infinite;
+}
+
+.portail-arena::after {
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.4) 0%, transparent 70%);
+}
+
+/* ===========================
+   RESPONSIVE
+   =========================== */
+
+@media (max-width: 768px) {
+    .tour-container {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .tour-image {
+        width: 100px;
+        height: 100px;
+    }
+    
+    #hero-chibi {
+        width: 50px;
+    }
+    
+    .ui-top {
+        padding: 12px;
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+    
+    .stats {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    #btn-retour-menu {
+        bottom: 20px;
+        left: 20px;
+        padding: 10px 20px;
+    }
+    
+    .nom-tour {
+        font-size: 10px;
+        bottom: -35px;
+    }
+    
+    .portail-duel {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .portail-arena {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .portail-icone {
+        font-size: 1.5em;
+    }
+    
+    .portail-arena .portail-icone {
+        font-size: 2.2em;
+    }
+    
+    .portail-tooltip {
+        font-size: 0.7em;
+        bottom: -35px;
+    }
+}

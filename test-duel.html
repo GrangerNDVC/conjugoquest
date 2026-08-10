@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🧪 Test Duel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: white;
+            padding: 30px;
+        }
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+        }
+        .success { background: #4CAF50; }
+        .warning { background: #fbbf24; color: #1a1a2e; }
+        .danger { background: #f44336; }
+        pre {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 TEST DU SYSTÈME DE DUEL</h1>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div style="border: 2px solid #4CAF50; padding: 20px; border-radius: 10px;">
+            <h2>✅ Tests fonctionnels</h2>
+            <button class="success" onclick="testJoueursEnLigne()">1. Vérifier joueurs en ligne</button>
+            <button class="success" onclick="testInvitation()">2. Tester affichage invitation</button>
+            <button class="success" onclick="testChargementNiveaux()">3. Vérifier niveaux</button>
+            <button class="success" onclick="testImages()">4. Vérifier images</button>
+        </div>
+        
+        <div style="border: 2px solid #fbbf24; padding: 20px; border-radius: 10px;">
+            <h2>⚡ Actions rapides</h2>
+            <button class="warning" onclick="ouvrirDeuxOnglets()">Ouvrir 2 onglets duel</button>
+            <button class="warning" onclick="simulerInvitation()">Simuler réception invitation</button>
+            <button class="warning" onclick="viderSession()">Vider sessionStorage</button>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <h3>📋 Logs de test</h3>
+        <pre id="logs">Prêt...<

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conjugo Quest</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/intro.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="intro-container">
+        <!-- Grande image du héros -->
+        <div class="hero-large-portrait">
+            <img src="img/heroes/hero_intro.png" alt="Le Héros" id="hero-img" onerror="console.error('Image non trouvée:', this.src)">
+        </div>
+        
+        <!-- Boîte de dialogue style Zelda -->
+        <div id="dialogue-box">
+            <div id="dialogue-text"></div>
+            <div id="dialogue-indicator">▼</div>
+        </div>
+        
+        <!-- 2 Boutons simples -->
+        <div id="tabs-container" style="display: none;">
+            <button class="tab-btn" onclick="commencerAventure()">
+                ⚔️ Commencer l'Aventure
+            </button>
+            <button class="tab-btn" onclick="ouvrirRegles()">
+                📖 Règles & Gameplay
+            </button>
+        </div>
+        
+        <!-- Panneau des règles (masqué par défaut) -->
+        <div id="regles-panel" style="display: none;">
+            <div class="regles-content">
+                <h3>⚔️ Le Combat</h3>
+                <div class="regle-section">
+                    <h4>🔮 Phase d'Attaque - L'Incantation Magique</h4>
+                    <p>
+                        Pour attaquer, tu dois prononcer une <strong>formule magique de conjugaison</strong>. 
+                        On te présentera un verbe et une personne, et tu devras choisir la <strong>bonne terminaison</strong>.
+                    </p>
+                    <p>
+                        ✅ <strong>Conjugaison correcte</strong> : Ton attaque frappe la tour !<br>
+                        ❌ <strong>Erreur</strong> : Tu rates ton tour.
+                    </p>
+                </div>
+                
+                <div class="regle-section">
+                    <h4>🛡️ Phase de Défense - Le Bouclier Grammatical</h4>
+                    <p>
+                        Le gardien t'envoie un projectile magique. Pour te protéger, choisis la bonne réponse 
+                        parmi plusieurs formules pour activer ton bouclier.
+                    </p>
+                    <p>
+                        ✅ <strong>Bonne réponse</strong> : Ton bouclier s'active !<br>
+                        ❌ <strong>Erreur</strong> : Tu perds une vie (❤️).
+                    </p>
+                </div>
+                
+                <h3>🎯 Les Règles</h3>
+                <ul>
+                    <li>❤️ <strong>3 Vies</strong> par niveau (régénérées à chaque nouvelle tour)</li>
+                    <li>🏰 <strong>10 Vies</strong> pour chaque tour ennemie (20 pour boss, 40 pour boss ultime)</li>
+                    <li>⚡ <strong>Combat au tour par tour</strong></li>
+                    <li>🏆 <strong>21 Niveaux</strong> à conquérir</li>
+                    <li>⚔️ <strong>Nouvelles armes</strong> à chaque victoire</li>
+                    <li>💾 <strong>Sauvegarde automatique</strong></li>
+                </ul>
+            </div>
+            
+            <!-- Bouton pour fermer les règles -->
+            <button id="btn-fermer-regles" onclick="fermerRegles()">
+                ✕ Fermer
+            </button>
+        </div>
+    </div>
+    
+    <script src="js/intro.js"></script>
+</body>
+</html>

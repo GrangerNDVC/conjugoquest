@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚔️ Proposition de Duel - Conjugo Quest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .proposition-card {
+            background: rgba(0, 0, 0, 0.9);
+            border: 4px solid #fbbf24;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 50px rgba(251, 191, 36, 0.3);
+            animation: cardAppear 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .proposition-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .vs-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .vs-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #fbbf24;
+            overflow: hidden;
+            background: #4a2c1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+        }
+
+        .vs-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .vs-divider {
+            font-size: 3em;
+            color: #fbbf24;
+            text-shadow: 0 0 20px #fbbf24;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .inviter-info {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .inviter-name {
+            font-size: 2em;
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .inviter-title {
+            color: #94a3b8;
+            font-size: 1.1em;
+        }
+
+        .duel-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .detail-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #8B4513;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .detail-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            color: #94a3b8;
+            font-size: 0.8em;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #fbbf24;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 20px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.3em;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-accept {
+            background: linear-gradient(145deg, #4CAF50, #2E7D32);
+            color: white;
+            border: 3px solid #1B5E20;
+        }
+
+        .btn-accept:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.5);
+        }
+
+        .btn-decline {
+            background: linear-gradient(145deg, #f44336, #B71C1C);
+            color: white;
+            border: 3px solid #8B0000;
+        }
+
+        .btn-decline:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(244, 67, 54, 0.5);
+        }
+
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #fbbf24;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            color: #fbbf24;
+            z-index: 2;
+        }
+
+        .timer.blink {
+            animation: timerBlink 1s infinite;
+        }
+
+        @keyframes timerBlink {
+            0%, 100% { border-color: #fbbf24; color: #fbbf24; }
+            50% { border-color: #f44336; color: #f44336; }
+        }
+
+        .level-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #fbbf24;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            color: #fbbf24;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="proposition-card" id="proposition-card">
+        <div class="level-badge" id="level-badge">Niveau 1</div>
+        <div class="timer" id="timer">30s</div>
+
+        <div class="vs-header">
+            <div class="vs-avatar" id="inviter-avatar">
+                <!-- Image dynamique -->
+            </div>
+            <div class="vs-divider">⚔️</div>
+            <div class="vs-avatar" id="current-player-avatar">
+                <!-- Image dynamique -->
+            </div>
+        </div>
+
+        <div class="inviter-info">
+            <div class="inviter-name" id="inviter-name">Inconnu</div>
+            <div class="inviter-title" id="inviter-title">veut te défier en duel !</div>
+        </div>
+
+        <div class="duel-details">
+            <div class="detail-box">
+                <div class="detail-icon">📚</div>
+                <div class="detail-label">Niveau</div>
+                <div class="detail-value" id="duel-level">Présent</div>
+            </div>
+            <div class="detail-box">
+                <div class="detail-icon">❤️</div>
+                <div class="detail-label">Vies</div>
+                <div class="detail-value" id="duel-health">10</div>
+            </div>
+            <div class="detail-box">
+                <div class="detail-icon">⏱️</div>
+                <div class="detail-label">Temps/tour</div>
+                <div class="detail-value" id="duel-time">10s</div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-accept" onclick="acceptDuel()">
+                <span>⚔️</span> ACCEPTER LE DUEL
+            </button>
+            <button class="btn btn-decline" onclick="declineDuel()">
+                <span>✕</span> REFUSER
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Récupérer les paramètres
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        const duelData = {
+            inviter: urlParams.get('inviter') || 'Inconnu',
+            inviterRole: urlParams.get('inviterRole') || 'hero',
+            level: parseInt(urlParams.get('level')) || 1,
+            levelName: urlParams.get('levelName') || 'Présent',
+            health: parseInt(urlParams.get('health')) || 10,
+            timeLimit: parseInt(urlParams.get('time')) || 10,
+            roomCode: urlParams.get('code') || 'XXX',
+            currentRole: urlParams.get('currentRole') || 'enemy'
+        };
+
+        // Mettre à jour l'affichage
+        document.getElementById('inviter-name').textContent = duelData.inviter;
+        document.getElementById('duel-level').textContent = duelData.levelName;
+        document.getElementById('duel-health').textContent = duelData.health;
+        document.getElementById('duel-time').textContent = duelData.timeLimit + 's';
+        document.getElementById('level-badge').textContent = `Niveau ${duelData.level} - ${duelData.levelName}`;
+
+        const niveauFormatte = String(duelData.level).padStart(2, '0');
+
+        // Image de l'inviteur
+        const inviterAvatar = document.getElementById('inviter-avatar');
+        const inviterImg = document.createElement('img');
+        
+        if (duelData.inviterRole === 'hero') {
+            inviterImg.src = `img/combat/${niveauFormatte}_attaque.png`;
+        } else {
+            inviterImg.src = `img/enemies/${niveauFormatte}_profil.png`;
+        }
+        
+        inviterImg.onerror = () => {
+            inviterAvatar.innerHTML = '<div style="font-size: 3em;">' + (duelData.inviterRole === 'hero' ? '⚔️' : '👾') + '</div>';
+        };
+        inviterAvatar.innerHTML = '';
+        inviterAvatar.appendChild(inviterImg);
+
+        // Image du joueur actuel
+        const currentAvatar = document.getElementById('current-player-avatar');
+        const currentImg = document.createElement('img');
+        
+        if (duelData.currentRole === 'hero') {
+            currentImg.src = `img/combat/${niveauFormatte}_attaque.png`;
+        } else {
+            currentImg.src = `img/enemies/${niveauFormatte}_profil.png`;
+        }
+        
+        currentImg.onerror = () => {
+            currentAvatar.innerHTML = '<div style="font-size: 3em;">' + (duelData.currentRole === 'hero' ? '⚔️' : '🛡️') + '</div>';
+        };
+        currentAvatar.innerHTML = '';
+        currentAvatar.appendChild(currentImg);
+
+        // Timer 30s
+        let timeLeft = 30;
+        const timerElement = document.getElementById('timer');
+        
+        const timer = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft + 's';
+            
+            if (timeLeft <= 10) {
+                timerElement.classList.add('blink');
+            }
+            
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                declineDuel(true);
+            }
+        }, 1000);
+
+        function acceptDuel() {
+            clearInterval(timer);
+            
+            sessionStorage.setItem('accepted_duel', JSON.stringify({
+                roomCode: duelData.roomCode,
+                level: duelData.level,
+                health: duelData.health,
+                timeLimit: duelData.timeLimit * 1000,
+                character: duelData.currentRole
+            }));
+            
+            window.location.href = `duel.html?accepted=true&code=${duelData.roomCode}`;
+        }
+
+        function declineDuel(timeout = false) {
+            clearInterval(timer);
+            
+            if (timeout) {
+                alert('⏰ Le délai de la proposition a expiré.');
+            }
+            
+            window.location.href = 'map.html';
+        }
+    </script>
+</body>
+</html>

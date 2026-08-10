@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conjugo Quest - Combat</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/combat.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Polices : Cinzel pour médiéval + Dancing Script pour incantations manuscrites -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Dancing+Script:wght@400;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Container principal -->
+    <div id="combat-container">
+        
+        <!-- PHASE 1: Introduction - Tour et Ennemi -->
+        <div id="phase-intro" class="phase active">
+            <div id="intro-fond-noir"></div>
+            
+            <!-- Titre AU-DESSUS de tout -->
+            <h2 id="nom-niveau"></h2>
+            
+            <!-- Tour au centre -->
+            <div id="tour-intro">
+                <img id="img-tour-intact" src="" alt="Tour">
+            </div>
+            
+            <!-- Ennemi par-dessus -->
+            <div id="ennemi-intro">
+                <img id="img-ennemi-arrogant" src="" alt="Ennemi">
+            </div>
+            
+            <!-- Dialogue SOUS les images -->
+            <div id="dialogue-defi" class="dialogue-box"></div>
+            
+            <!-- Bouton commencer -->
+            <button id="btn-commencer-combat" onclick="demarrerCombat()">
+                ⚔️ Commencer le Combat !
+            </button>
+        </div>
+        
+        <!-- PHASE 2: Combat Principal -->
+        <div id="phase-combat" class="phase">
+            <!-- Background de combat -->
+            <img id="background-combat" src="" alt="Background">
+            
+            <!-- Héros en bas à gauche -->
+            <img id="hero-combat" src="" alt="Héros">
+            
+            <!-- Barre de vie de la tour EN HAUT À DROITE (toujours visible) -->
+            <div id="barre-vie-tour">
+                <div id="vie-tour-actuelle"></div>
+            </div>
+            
+            <!-- Tour (masquée pendant le combat) -->
+            <div id="tour-combat">
+                <img id="img-tour-etat" src="" alt="Tour">
+            </div>
+            
+            <!-- Ennemi (au centre, 10% plus grand) -->
+            <div id="ennemi-combat">
+                <img id="img-ennemi-etat" src="" alt="Ennemi">
+                <div id="dialogue-ennemi" class="dialogue-box" style="display: none;"></div>
+            </div>
+            
+            <!-- Zone input EN HAUT AU MILIEU -->
+            <div id="zone-input-attaque" style="display: none;">
+                <div id="info-conjugaison">
+                    <span id="verbe-infinitif"></span> - 
+                    <span id="temps-verbal"></span> - 
+                    <span id="personne-verbal"></span>
+                </div>
+                <input type="text" id="input-conjugaison" placeholder="Conjugue le verbe...">
+                <button id="btn-valider-attaque" onclick="validerAttaque()">
+                    🔮 Lancer l'Incantation !
+                </button>
+            </div>
+            
+            <!-- Zone d'incantation MAGIQUE (avec cercle et ellipses) -->
+            <div id="zone-incantation" style="display: none;">
+                <!-- Cercle magique avec ellipses tournantes -->
+                <div class="cercle-magique">
+                    <!-- Ellipses tournantes décalées -->
+                    <div class="ellipse-magique ellipse-1"></div>
+                    <div class="ellipse-magique ellipse-2"></div>
+                    <div class="ellipse-magique ellipse-3"></div>
+                    <div class="ellipse-magique ellipse-4"></div>
+                    
+                    <!-- Particules magiques -->
+                    <div class="particule-magique" style="top: 20%; left: 30%; animation-delay: 0s;"></div>
+                    <div class="particule-magique" style="top: 60%; left: 70%; animation-delay: 0.5s;"></div>
+                    <div class="particule-magique" style="top: 40%; left: 15%; animation-delay: 1s;"></div>
+                    <div class="particule-magique" style="top: 80%; left: 50%; animation-delay: 1.5s;"></div>
+                    <div class="particule-magique" style="top: 10%; left: 80%; animation-delay: 2s;"></div>
+                    
+                    <!-- Centre avec le texte d'incantation -->
+                    <div class="centre-incantation">
+                        <div id="incantation-text" class="texte-conjugaison"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Zone de défense (QCM) -->
+            <div id="zone-defense" style="display: none;">
+                <div id="qcm-container">
+                    <h3 id="question-defense"></h3>
+                    <div id="reponses-defense"></div>
+                </div>
+            </div>
+            
+            <!-- Particule d'attaque (projectile bleu avec texte) -->
+            <div id="particule-attaque" style="display: none;"></div>
+            
+            <!-- UI du joueur -->
+            <div id="ui-joueur">
+                <div id="vies-joueur">❤️❤️❤️</div>
+                <div id="combo-counter" style="display: none;">
+                    🔥 Combo: <span id="combo-nombre">0</span>/5
+                </div>
+            </div>
+        </div>
+        
+        <!-- PHASE 3: Victoire -->
+        <div id="phase-victoire" class="phase">
+            <div id="victoire-content">
+                <img id="img-tour-detruite" src="" alt="Tour détruite">
+                <img id="img-ennemi-vaincu" src="" alt="Ennemi vaincu">
+                <h2>🏆 Victoire ! 🏆</h2>
+                <p id="message-victoire">Tu as obtenu un nouvel équipement !</p>
+                <img id="img-recompense" src="" alt="Récompense">
+                <button id="btn-retour-carte" onclick="retourCarte()">
+                    🗺️ Retour à la Carte
+                </button>
+            </div>
+        </div>
+        
+        <!-- PHASE 4: Défaite -->
+        <div id="phase-defaite" class="phase">
+            <div id="defaite-content">
+                <img id="img-hero-defaite" src="" alt="Héros vaincu">
+                <h2>💀 Défaite... 💀</h2>
+                <p id="message-defaite"></p>
+                <div id="choix-defaite">
+                    <button onclick="recommencerCombat()">🔄 Recommencer</button>
+                    <button onclick="retourCarte()">🗺️ Retour à la Carte</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script src="js/data-niveau-01.js"></script>
+    <script src="js/data-niveau-02.js"></script>
+    <script src="js/data-niveau-03.js"></script>
+    <script src="js/data-niveau-04.js"></script>
+    <script src="js/visual-config.js"></script>
+    <script src="js/combat.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Administration</title>
+    <!-- Pas de lien depuis aucune autre page -->
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { background:#0a0a1e; color:white; font-family:'Cinzel',serif; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+        .box { background:rgba(255,255,255,0.05); border:2px solid #fbbf24; border-radius:15px; padding:40px; width:400px; }
+        h2 { color:#fbbf24; text-align:center; margin-bottom:25px; }
+        input { width:100%; padding:12px; background:rgba(255,255,255,0.1); border:2px solid #444; border-radius:8px; color:white; font-family:'Cinzel',serif; margin-bottom:15px; box-sizing:border-box; }
+        button { width:100%; padding:12px; background:linear-gradient(145deg,#fbbf24,#f59e0b); border:none; border-radius:8px; color:#1a1a2e; font-family:'Cinzel',serif; font-weight:bold; cursor:pointer; }
+        .error { color:#f87171; text-align:center; margin-top:10px; display:none; }
+        .panel { display:none; }
+        table { width:100%; border-collapse:collapse; margin-top:20px; }
+        th { color:#fbbf24; border-bottom:2px solid #fbbf24; padding:8px; text-align:left; font-size:0.85em; }
+        td { padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:0.85em; }
+        .btn-sup { padding:4px 10px; background:#f44336; border:none; border-radius:4px; color:white; cursor:pointer; font-size:0.8em; }
+        .btn-reset { padding:4px 10px; background:#ff9800; border:none; border-radius:4px; color:white; cursor:pointer; font-size:0.8em; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <!-- LOGIN -->
+    <div id="login-zone">
+        <h2>🔐 Administration</h2>
+        <input type="password" id="pwd" placeholder="Mot de passe" onkeydown="if(event.key==='Enter') verifier()">
+        <button onclick="verifier()">Accéder</button>
+        <div class="error" id="err">❌ Mot de passe incorrect</div>
+    </div>
+
+    <!-- PANEL -->
+    <div class="panel" id="panel-zone" style="min-width:700px;max-width:900px;">
+        <h2>👥 Gestion des élèves</h2>
+        <div id="liste">⏳ Chargement...</div>
+        <div style="margin-top:20px;text-align:center;">
+            <button onclick="window.location.href='map.html'" style="width:auto;padding:8px 20px;">⬅️ Retour au jeu</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script>
+    // Hash SHA-256 du mot de passe (Nino!5997)
+    const HASH = "6e93fd13f4678a6ddd4c9f8e378e882a72b403301011d8cf3a580d5d65214fa9";
+    let tentatives = 0;
+
+    async function verifier() {
+        tentatives++;
+        if (tentatives > 5) {
+            document.getElementById('err').textContent = '⛔ Trop de tentatives. Recharge la page.';
+            document.getElementById('err').style.display = 'block';
+            document.getElementById('pwd').disabled = true;
+            return;
+        }
+        const pwd = document.getElementById('pwd').value;
+        const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pwd));
+        const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+
+        if (hash === HASH) {
+            document.getElementById('login-zone').style.display = 'none';
+            document.getElementById('panel-zone').style.display = 'block';
+            document.querySelector('.box').style.width = 'auto';
+            chargerJoueurs();
+        } else {
+            document.getElementById('err').style.display = 'block';
+            document.getElementById('pwd').value = '';
+        }
+    }
+
+    async function chargerJoueurs() {
+        const div = document.getElementById('liste');
+        try {
+            const snap = await window.FirebaseDB.collection('joueurs').orderBy('pseudo').get();
+            let html = '<table><thead><tr><th>Pseudo</th><th>Niveaux</th><th>Dernière co.</th><th>Actions</th></tr></thead><tbody>';
+            snap.forEach(doc => {
+                const d = doc.data();
+                const n = d.progression?.niveauxCompletes?.length || 0;
+                const date = d.derniereConnexion?.toDate?.()?.toLocaleDateString('fr-FR') || '—';
+                html += `<tr>
+                    <td>${d.pseudo || '?'}</td>
+                    <td>${n}/21</td>
+                    <td>${date}</td>
+                    <td>
+                        <button class="btn-reset" onclick="resetJoueur('${doc.id}','${d.pseudo}')">🔄 Reset</button>
+                        <button class="btn-sup" onclick="supprimerJoueur('${doc.id}','${d.pseudo}')">🗑️ Suppr.</button>
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            div.innerHTML = html;
+        } catch(e) {
+            div.innerHTML = '❌ Erreur : ' + e.message;
+        }
+    }
+
+    async function supprimerJoueur(id, pseudo) {
+        if (!confirm('Supprimer ' + pseudo + ' définitivement ?')) return;
+        await window.FirebaseDB.collection('joueurs').doc(id).delete();
+        chargerJoueurs();
+    }
+
+    async function resetJoueur(id, pseudo) {
+        if (!confirm('Remettre ' + pseudo + ' au niveau 1 ?')) return;
+        await window.FirebaseDB.collection('joueurs').doc(id).update({
+            progression: { niveauActuel: 1, niveauxCompletes: [], viesHero: 3 }
+        });
+        chargerJoueurs();
+    }
+</script>
+</body>
+</html>

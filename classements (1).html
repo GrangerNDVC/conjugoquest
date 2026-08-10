@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Conjugo Quest — Classements</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { background: #0a0a1e; color: white; font-family: 'Cinzel', serif; min-height: 100vh; padding: 20px; }
+        h1 { text-align: center; color: #fbbf24; font-size: 2em; margin-bottom: 10px; }
+        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .tab { padding: 10px 25px; background: rgba(255,255,255,0.05); border: 2px solid #444;
+               border-radius: 8px; cursor: pointer; transition: all 0.2s; font-family: 'Cinzel', serif; color: #94a3b8; }
+        .tab.active { border-color: #fbbf24; color: #fbbf24; background: rgba(251,191,36,0.1); }
+        .panel { display: none; max-width: 800px; margin: 0 auto; }
+        .panel.active { display: block; }
+        .level-select { background: rgba(255,255,255,0.05); border: 2px solid #8B4513;
+                        border-radius: 8px; padding: 10px 15px; color: white;
+                        font-family: 'Cinzel', serif; font-size: 0.95em; margin-bottom: 20px; width: 100%; }
+        table { width: 100%; border-collapse: collapse; }
+        th { color: #fbbf24; border-bottom: 2px solid #fbbf24; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        tr:hover td { background: rgba(255,255,255,0.04); }
+        .rank-1 td:first-child::before { content: '🥇 '; }
+        .rank-2 td:first-child::before { content: '🥈 '; }
+        .rank-3 td:first-child::before { content: '🥉 '; }
+        .loading { text-align: center; color: #94a3b8; padding: 40px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        .btn-retour { display: block; margin: 30px auto 0; padding: 12px 30px;
+                      background: rgba(255,255,255,0.1); border: 2px solid #8B4513;
+                      border-radius: 8px; color: white; font-family: 'Cinzel', serif;
+                      cursor: pointer; text-align: center; max-width: 200px; text-decoration: none; }
+        .btn-retour:hover { border-color: #fbbf24; color: #fbbf24; }
+        .my-result { background: rgba(251,191,36,0.08); }
+    </style>
+</head>
+<body>
+    <h1>🏆 Tableaux d'Honneur</h1>
+
+    <div class="tabs">
+        <button class="tab active" onclick="afficherPanel('aventure')">⚔️ Aventure</button>
+        <button class="tab" onclick="afficherPanel('duel')">🥊 Mes Duels</button>
+    </div>
+
+    <!-- PANEL AVENTURE -->
+    <div id="panel-aventure" class="panel active">
+        <select class="level-select" id="select-niveau-aventure" onchange="chargerClassementAventure()">
+            <option value="global">🌍 Classement global (tous niveaux)</option>
+            <option value="1">Niveau 1 — Présent</option>
+            <option value="2">Niveau 2 — Passé Composé</option>
+            <option value="3">Niveau 3 — Imparfait</option>
+            <option value="4">Niveau 4 — Futur</option>
+            <option value="5">Niveau 5 — Plus-que-Parfait</option>
+            <option value="6">Niveau 6 — Futur Antérieur</option>
+            <option value="7">Niveau 7 — Passé Simple</option>
+            <option value="8">Niveau 8 — Passé Antérieur</option>
+            <option value="9">Niveau 9 — BOSS Indicatif</option>
+            <option value="10">Niveau 10 — Impératif Présent</option>
+            <option value="11">Niveau 11 — Impératif Passé</option>
+            <option value="12">Niveau 12 — BOSS Impératif</option>
+            <option value="13">Niveau 13 — Conditionnel Présent</option>
+            <option value="14">Niveau 14 — Conditionnel Passé</option>
+            <option value="15">Niveau 15 — BOSS Conditionnel</option>
+            <option value="16">Niveau 16 — Subjonctif Présent</option>
+            <option value="17">Niveau 17 — Subjonctif Passé</option>
+            <option value="18">Niveau 18 — Subjonctif Imparfait</option>
+            <option value="19">Niveau 19 — BOSS Subjonctif</option>
+            <option value="20">Niveau 20 — Voix Passive</option>
+            <option value="21">Niveau 21 — BOSS FINAL</option>
+        </select>
+        <div id="table-aventure"><div class="loading">⏳ Chargement...</div></div>
+    </div>
+
+    <!-- PANEL DUEL -->
+    <div id="panel-duel" class="panel">
+        <div id="table-duel"><div class="loading">⏳ Chargement...</div></div>
+    </div>
+
+    <a href="map.html" class="btn-retour">⬅️ Retour à la carte</a>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/save-system.js"></script>
+    <script>
+        function afficherPanel(nom) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('panel-' + nom).classList.add('active');
+            event.target.classList.add('active');
+            if (nom === 'aventure') chargerClassementAventure();
+            if (nom === 'duel') chargerMesDuels();
+        }
+
+        // ===== CLASSEMENT AVENTURE =====
+        async function chargerClassementAventure() {
+            const div = document.getElementById('table-aventure');
+            div.innerHTML = '<div class="loading">⏳ Chargement...</div>';
+            const niveau = document.getElementById('select-niveau-aventure').value;
+            const monId = window.SaveSystem ? SaveSystem.getCurrentUserId() : null;
+
+            try {
+                const snapshot = await window.FirebaseDB.collection('joueurs').get();
+                let joueurs = [];
+                snapshot.forEach(doc => {
+                    const d = doc.data();
+                    if (!d.pseudo) return;
+                    const completes = d.progression?.niveauxCompletes || [];
+                    if (niveau === 'global') {
+                        joueurs.push({ id: doc.id, pseudo: d.pseudo, score: completes.length, detail: completes.length + '/21 niveaux' });
+                    } else {
+                        const n = parseInt(niveau);
+                        if (completes.includes(n)) {
+                            joueurs.push({ id: doc.id, pseudo: d.pseudo, score: completes.length, detail: 'Niveau ' + n + ' complété' });
+                        }
+                    }
+                });
+
+                // Trier par score décroissant
+                joueurs.sort((a, b) => b.score - a.score);
+                const top10 = joueurs.slice(0, 10);
+
+                if (top10.length === 0) {
+                    div.innerHTML = '<p style="text-align:center;color:#94a3b8;">Aucun joueur pour ce niveau.</p>';
+                    return;
+                }
+
+                let html = '<table><thead><tr><th>Joueur</th><th>Progression</th></tr></thead><tbody>';
+                top10.forEach((j, i) => {
+                    const mine = j.id === monId ? ' class="my-result"' : '';
+                    const rankClass = i < 3 ? ' class="rank-' + (i+1) + (j.id === monId ? ' my-result' : '') + '"' : mine;
+                    html += '<tr' + rankClass + '><td>' + j.pseudo + '</td><td>' + j.detail + '</td></tr>';
+                });
+                html += '</tbody></table>';
+                div.innerHTML = html;
+            } catch(e) {
+                div.innerHTML = '<p style="color:#f87171;">❌ Erreur : ' + e.message + '</p>';
+            }
+        }
+
+        // ===== MES DUELS =====
+        async function chargerMesDuels() {
+            const div = document.getElementById('table-duel');
+            div.innerHTML = '<div class="loading">⏳ Chargement...</div>';
+            const monId = window.SaveSystem ? SaveSystem.getCurrentUserId() : null;
+            const monPseudo = window.SaveSystem ? SaveSystem.getCurrentPlayerName() : '?';
+
+            if (!monId) {
+                div.innerHTML = '<p style="text-align:center;color:#94a3b8;">Connecte-toi pour voir tes duels.</p>';
+                return;
+            }
+
+            try {
+                // Chercher les duels terminés où je suis joueur1 ou joueur2
+                const [snap1, snap2] = await Promise.all([
+                    window.FirebaseDB.collection('duels').where('player1Id', '==', monId).where('statut', '==', 'termine').get(),
+                    window.FirebaseDB.collection('duels').where('player2Id', '==', monId).where('statut', '==', 'termine').get()
+                ]);
+
+                // Agréger par adversaire
+                const stats = {}; // { adversaireNom: { victoires, defaites } }
+
+                const traiter = (doc, jesuisP1) => {
+                    const d = doc.data();
+                    const advNom = jesuisP1 ? d.player2Name : d.player1Name;
+                    if (!stats[advNom]) stats[advNom] = { victoires: 0, defaites: 0 };
+                    const jaigagne = (jesuisP1 && d.gagnant === 'player1') || (!jesuisP1 && d.gagnant === 'player2');
+                    if (jaigagne) stats[advNom].victoires++;
+                    else stats[advNom].defaites++;
+                };
+
+                snap1.forEach(doc => traiter(doc, true));
+                snap2.forEach(doc => traiter(doc, false));
+
+                const adversaires = Object.entries(stats);
+                if (adversaires.length === 0) {
+                    div.innerHTML = '<p style="text-align:center;color:#94a3b8;">Aucun duel terminé pour l'instant.</p>';
+                    return;
+                }
+
+                // Trier par victoires décroissantes
+                adversaires.sort((a, b) => b[1].victoires - a[1].victoires);
+
+                let html = '<p style="color:#94a3b8;margin-bottom:15px;text-align:center;">Historique de <strong style="color:#fbbf24;">' + monPseudo + '</strong></p>';
+                html += '<table><thead><tr><th>Adversaire</th><th>✅ Victoires</th><th>❌ Défaites</th></tr></thead><tbody>';
+                adversaires.forEach(([adv, s]) => {
+                    html += '<tr><td>' + adv + '</td><td style="color:#4CAF50;text-align:center;">' + s.victoires + '</td><td style="color:#f44336;text-align:center;">' + s.defaites + '</td></tr>';
+                });
+                html += '</tbody></table>';
+                div.innerHTML = html;
+            } catch(e) {
+                div.innerHTML = '<p style="color:#f87171;">❌ Erreur : ' + e.message + '</p>';
+            }
+        }
+
+        // Charger au démarrage
+        document.addEventListener('DOMContentLoaded', () => {
+            chargerClassementAventure();
+        });
+    </script>
+</body>
+</html>

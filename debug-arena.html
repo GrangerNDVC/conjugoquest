@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 DEBUG ARÈNE ULTIME - 4 JOUEURS - Conjugo Quest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: #0f0f23;
+            color: #fff;
+            padding: 10px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #fbbf24;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header h1 {
+            color: #fbbf24;
+            font-size: 1.5em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .controls select, .controls button {
+            padding: 8px 15px;
+            font-family: 'Cinzel', serif;
+            background: #1a1a2e;
+            border: 2px solid #fbbf24;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .controls button {
+            background: linear-gradient(145deg, #fbbf24, #f59e0b);
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+
+        .controls button.test {
+            background: linear-gradient(145deg, #4CAF50, #2E7D32);
+            color: white;
+        }
+
+        .controls button.duel {
+            background: linear-gradient(145deg, #f43f5e, #9d174d);
+            color: white;
+        }
+
+        .grid-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 10px;
+            min-height: 0;
+        }
+
+        .player-cell {
+            background: #1a1a2e;
+            border: 3px solid #8B4513;
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .player-cell.active-turn {
+            border-color: #4CAF50;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+        }
+
+        .player-header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 8px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #fbbf24;
+        }
+
+        .player-name {
+            color: #fbbf24;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .player-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #4a2c1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fbbf24;
+        }
+
+        .player-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9em;
+        }
+
+        .life {
+            color: #ff4444;
+        }
+
+        .level-badge {
+            background: #fbbf24;
+            color: #1a1a2e;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .progress-badge {
+            background: #4a2c1a;
+            color: #fbbf24;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            border: 1px solid #fbbf24;
+        }
+
+        .iframe-wrapper {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+            background: #000;
+        }
+
+        .game-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+        }
+
+        .debug-panel {
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 2px solid #fbbf24;
+            padding: 8px;
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .debug-btn {
+            padding: 4px 10px;
+            background: #2d3748;
+            border: 1px solid #718096;
+            border-radius: 3px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-family: 'Cinzel', serif;
+            transition: all 0.2s;
+        }
+
+        .debug-btn:hover {
+            background: #4a5568;
+            border-color: #fbbf24;
+        }
+
+        .debug-btn.success {
+            background: #4CAF50;
+            border-color: #2E7D32;
+        }
+
+        .debug-btn.error {
+            background: #f44336;
+            border-color: #B71C1C;
+        }
+
+        .answer-input {
+            background: #2d3748;
+            border: 1px solid #fbbf24;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 3px;
+            width: 100px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .log-panel {
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #fbbf24;
+            border-radius: 10px;
+            padding: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.8em;
+        }
+
+        .log-entry {
+            margin-bottom: 3px;
+            color: #94a3b8;
+        }
+
+        .log-entry.success {
+            color: #4CAF50;
+        }
+
+        .log-entry.error {
+            color: #f44336;
+        }
+
+        .log-entry.info {
+            color: #5eb3ff;
+        }
+
+        .sync-status {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 3px;
+            padding: 2px 5px;
+            font-size: 0.7em;
+            color: #4CAF50;
+            z-index: 100;
+        }
+
+        .current-question {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 3px;
+            padding: 2px 5px;
+            font-size: 0.7em;
+            color: #fbbf24;
+            max-width: 80%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 5px;
+            margin-left: auto;
+        }
+
+        .test-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #fbbf24;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .test-panel h3 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎮 DEBUG ARÈNE ULTIME - 4 JOUEURS</h1>
+        <div class="controls">
+            <select id="niveau-select">
+                <option value="1">Niveau 1 - Présent</option>
+                <option value="2">Niveau 2 - Passé Composé</option>
+                <option value="3">Niveau 3 - Imparfait</option>
+                <option value="4">Niveau 4 - Futur</option>
+                <option value="5">Niveau 5 - Plus-que-Parfait</option>
+                <option value="6">Niveau 6 - Futur Antérieur</option>
+                <option value="7">Niveau 7 - Passé Simple</option>
+                <option value="8">Niveau 8 - Passé Antérieur</option>
+                <option value="9">Niveau 9 - BOSS Indicatif</option>
+                <option value="10">Niveau 10 - Impératif Présent</option>
+                <option value="11">Niveau 11 - Impératif Passé</option>
+                <option value="12">Niveau 12 - BOSS Impératif</option>
+                <option value="13">Niveau 13 - Conditionnel Présent</option>
+                <option value="14">Niveau 14 - Conditionnel Passé</option>
+                <option value="15">Niveau 15 - BOSS Conditionnel</option>
+                <option value="16">Niveau 16 - Subjonctif Présent</option>
+                <option value="17">Niveau 17 - Subjonctif Passé</option>
+                <option value="18">Niveau 18 - Subjonctif Imparfait</option>
+                <option value="19">Niveau 19 - BOSS Subjonctif</option>
+                <option value="20">Niveau 20 - Voix Passive</option>
+                <option value="21">Niveau 21 - BOSS FINAL</option>
+            </select>
+            <button onclick="syncAllPlayers()">🔄 SYNC TOUS</button>
+            <button onclick="resetAllPlayers()">🔄 RESET TOUS</button>
+            <button onclick="startAllCombat()">⚔️ DÉMARRER TOUS</button>
+            <button onclick="toggleAutoAnswer()" id="auto-answer-btn">🤖 AUTO OFF</button>
+        </div>
+    </div>
+
+    <!-- PANEL DE TEST RAPIDE -->
+    <div class="test-panel">
+        <h3>🧪 SCÉNARIOS DE TEST</h3>
+        <div class="test-buttons">
+            <button class="test" onclick="scenarioComplet()">🎯 Joueur 1: Tout débloqué</button>
+            <button class="test" onclick="scenarioIntermediaire()">📊 Joueur 2: Niveau 10</button>
+            <button class="test" onclick="scenarioDebutant()">🌱 Joueur 3: Niveau 5</button>
+            <button class="test" onclick="scenarioNoob()">🆕 Joueur 4: Débutant</button>
+            <button class="duel" onclick="openLancerDuel()">⚔️ Ouvrir LANCER-DUEL</button>
+            <button class="duel" onclick="openSalleAttente()">⏳ Ouvrir SALLE ATTENTE</button>
+            <button class="duel" onclick="openDuelPage()">🎮 Ouvrir DUEL</button>
+            <button class="duel" onclick="openArenaConfig()">🏟️ Ouvrir CONFIG ARÈNE</button>
+        </div>
+    </div>
+
+    <div class="grid-container" id="grid-container">
+        <!-- Player 1 - Héros (Complet) -->
+        <div class="player-cell" id="player1-cell">
+            <div class="player-header">
+                <div class="player-name">
+                    <span class="player-avatar">⚔️</span>
+                    Joueur 1 (Héros)
+                </div>
+                <div class="player-stats">
+                    <span class="life" id="player1-life">❤️ 3</span>
+                    <span class="level-badge" id="player1-level">Niv 1</span>
+                    <span class="progress-badge" id="player1-progress">0/21</span>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <iframe class="game-frame" id="player1-frame" src="about:blank"></iframe>
+                <div class="sync-status" id="player1-sync">⏳</div>
+                <div class="current-question" id="player1-question">En attente...</div>
+            </div>
+            <div class="debug-panel" id="player1-debug">
+                <input type="text" class="answer-input" id="player1-answer" placeholder="Réponse...">
+                <button class="debug-btn success" onclick="sendAnswer(1)">📨 Envoyer</button>
+                <button class="debug-btn" onclick="setProgress(1, 21)">🔓 Débloquer tout</button>
+                <div class="quick-actions">
+                    <button class="debug-btn" onclick="injectAnswer(1, 'aie')">Aie</button>
+                    <button class="debug-btn" onclick="injectAnswer(1, 'sois')">Sois</button>
+                    <button class="debug-btn" onclick="injectAnswer(1, 'sache')">Sache</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player 2 - Gardien (Intermédiaire) -->
+        <div class="player-cell" id="player2-cell">
+            <div class="player-header">
+                <div class="player-name">
+                    <span class="player-avatar">👾</span>
+                    Joueur 2 (Gardien)
+                </div>
+                <div class="player-stats">
+                    <span class="life" id="player2-life">❤️ 3</span>
+                    <span class="level-badge" id="player2-level">Niv 1</span>
+                    <span class="progress-badge" id="player2-progress">0/21</span>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <iframe class="game-frame" id="player2-frame" src="about:blank"></iframe>
+                <div class="sync-status" id="player2-sync">⏳</div>
+                <div class="current-question" id="player2-question">En attente...</div>
+            </div>
+            <div class="debug-panel" id="player2-debug">
+                <input type="text" class="answer-input" id="player2-answer" placeholder="Réponse...">
+                <button class="debug-btn success" onclick="sendAnswer(2)">📨 Envoyer</button>
+                <button class="debug-btn" onclick="setProgress(2, 10)">📊 Niveau 10</button>
+                <div class="quick-actions">
+                    <button class="debug-btn" onclick="injectAnswer(2, 'aie')">Aie</button>
+                    <button class="debug-btn" onclick="injectAnswer(2, 'sois')">Sois</button>
+                    <button class="debug-btn" onclick="injectAnswer(2, 'sache')">Sache</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player 3 - Mage (Débutant) -->
+        <div class="player-cell" id="player3-cell">
+            <div class="player-header">
+                <div class="player-name">
+                    <span class="player-avatar">🔮</span>
+                    Joueur 3 (Mage)
+                </div>
+                <div class="player-stats">
+                    <span class="life" id="player3-life">❤️ 3</span>
+                    <span class="level-badge" id="player3-level">Niv 1</span>
+                    <span class="progress-badge" id="player3-progress">0/21</span>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <iframe class="game-frame" id="player3-frame" src="about:blank"></iframe>
+                <div class="sync-status" id="player3-sync">⏳</div>
+                <div class="current-question" id="player3-question">En attente...</div>
+            </div>
+            <div class="debug-panel" id="player3-debug">
+                <input type="text" class="answer-input" id="player3-answer" placeholder="Réponse...">
+                <button class="debug-btn success" onclick="sendAnswer(3)">📨 Envoyer</button>
+                <button class="debug-btn" onclick="setProgress(3, 5)">🌱 Niveau 5</button>
+                <div class="quick-actions">
+                    <button class="debug-btn" onclick="injectAnswer(3, 'aie')">Aie</button>
+                    <button class="debug-btn" onclick="injectAnswer(3, 'sois')">Sois</button>
+                    <button class="debug-btn" onclick="injectAnswer(3, 'sache')">Sache</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player 4 - Archer (Noob) -->
+        <div class="player-cell" id="player4-cell">
+            <div class="player-header">
+                <div class="player-name">
+                    <span class="player-avatar">🏹</span>
+                    Joueur 4 (Archer)
+                </div>
+                <div class="player-stats">
+                    <span class="life" id="player4-life">❤️ 3</span>
+                    <span class="level-badge" id="player4-level">Niv 1</span>
+                    <span class="progress-badge" id="player4-progress">0/21</span>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <iframe class="game-frame" id="player4-frame" src="about:blank"></iframe>
+                <div class="sync-status" id="player4-sync">⏳</div>
+                <div class="current-question" id="player4-question">En attente...</div>
+            </div>
+            <div class="debug-panel" id="player4-debug">
+                <input type="text" class="answer-input" id="player4-answer" placeholder="Réponse...">
+                <button class="debug-btn success" onclick="sendAnswer(4)">📨 Envoyer</button>
+                <button class="debug-btn" onclick="setProgress(4, 0)">🆕 Débutant</button>
+                <div class="quick-actions">
+                    <button class="debug-btn" onclick="injectAnswer(4, 'aie')">Aie</button>
+                    <button class="debug-btn" onclick="injectAnswer(4, 'sois')">Sois</button>
+                    <button class="debug-btn" onclick="injectAnswer(4, 'sache')">Sache</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="log-panel" id="log-panel">
+        <div class="log-entry">🔄 Système de debug initialisé...</div>
+        <div class="log-entry">📚 Tous les niveaux (1-21) sont chargés</div>
+        <div class="log-entry">🎮 Prêt à tester le mode duel/arène</div>
+    </div>
+
+    <!-- CHARGEMENT DE TOUS LES NIVEAUX -->
+    <script src="js/data-niveau-01.js"></script>
+    <script src="js/data-niveau-02.js"></script>
+    <script src="js/data-niveau-03.js"></script>
+    <script src="js/data-niveau-04.js"></script>
+    <script src="js/data-niveau-05.js"></script>
+    <script src="js/data-niveau-06.js"></script>
+    <script src="js/data-niveau-07.js"></script>
+    <script src="js/data-niveau-08.js"></script>
+    <script src="js/data-niveau-09.js"></script>
+    <script src="js/data-niveau-10.js"></script>
+    <script src="js/data-niveau-11.js"></script>
+    <script src="js/data-niveau-12.js"></script>
+    <script src="js/data-niveau-13.js"></script>
+    <script src="js/data-niveau-14.js"></script>
+    <script src="js/data-niveau-15.js"></script>
+    <script src="js/data-niveau-16.js"></script>
+    <script src="js/data-niveau-17.js"></script>
+    <script src="js/data-niveau-18.js"></script>
+    <script src="js/data-niveau-19.js"></script>
+    <script src="js/data-niveau-20.js"></script>
+    <script src="js/data-niveau-21.js"></script>
+    <script src="js/visual-config.js"></script>
+
+    <script>
+        // ===========================
+        // ÉTAT DES JOUEURS
+        // ===========================
+
+        const players = {
+            1: { 
+                frame: document.getElementById('player1-frame'), 
+                life: 3, 
+                level: 1, 
+                sync: 'ready',
+                name: 'Héros',
+                avatar: '⚔️',
+                progress: []
+            },
+            2: { 
+                frame: document.getElementById('player2-frame'), 
+                life: 3, 
+                level: 1, 
+                sync: 'ready',
+                name: 'Gardien',
+                avatar: '👾',
+                progress: []
+            },
+            3: { 
+                frame: document.getElementById('player3-frame'), 
+                life: 3, 
+                level: 1, 
+                sync: 'ready',
+                name: 'Mage',
+                avatar: '🔮',
+                progress: []
+            },
+            4: { 
+                frame: document.getElementById('player4-frame'), 
+                life: 3, 
+                level: 1, 
+                sync: 'ready',
+                name: 'Archer',
+                avatar: '🏹',
+                progress: []
+            }
+        };
+
+        let logPanel = document.getElementById('log-panel');
+        let autoAnswer = false;
+        let autoAnswerTimer = null;
+
+        // ===========================
+        // FONCTIONS DE LOG
+        // ===========================
+
+        function addLog(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const time = new Date().toLocaleTimeString();
+            entry.textContent = `[${time}] ${message}`;
+            logPanel.appendChild(entry);
+            logPanel.scrollTop = logPanel.scrollHeight;
+            console.log(`[${type}] ${message}`);
+        }
+
+        // ===========================
+        // INITIALISATION
+        // ===========================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            addLog('🎮 Debug Arène ULTIME initialisé - 4 joueurs prêts', 'success');
+            addLog('📚 Niveaux 1-21 chargés', 'info');
+            
+            // Charger le niveau 1 par défaut
+            setTimeout(() => {
+                syncAllPlayers();
+                // Appliquer les scénarios par défaut
+                setTimeout(() => {
+                    scenarioComplet();      // Joueur 1
+                    scenarioIntermediaire(); // Joueur 2
+                    scenarioDebutant();      // Joueur 3
+                    scenarioNoob();          // Joueur 4
+                }, 2000);
+            }, 500);
+        });
+
+        // ===========================
+        // SYNCHRONISATION
+        // ===========================
+
+        function syncAllPlayers() {
+            const niveau = document.getElementById('niveau-select').value;
+            addLog(`🔄 Synchronisation de tous les joueurs au niveau ${niveau}...`, 'info');
+            
+            for (let i = 1; i <= 4; i++) {
+                const frame = document.getElementById(`player${i}-frame`);
+                const syncStatus = document.getElementById(`player${i}-sync`);
+                const levelSpan = document.getElementById(`player${i}-level`);
+                
+                syncStatus.textContent = '⏳';
+                syncStatus.style.color = '#fbbf24';
+                
+                // Ajouter un timestamp pour éviter le cache
+                frame.src = `combat.html?niveau=${niveau}&debug=1&t=${Date.now()}`;
+                
+                players[i].level = parseInt(niveau);
+                players[i].sync = 'syncing';
+                levelSpan.textContent = `Niv ${niveau}`;
+                
+                // Simuler la fin de chargement
+                setTimeout(() => {
+                    syncStatus.textContent = '✅';
+                    syncStatus.style.color = '#4CAF50';
+                    players[i].sync = 'ready';
+                    addLog(`✅ Joueur ${i} synchronisé au niveau ${niveau}`, 'success');
+                }, 1500);
+            }
+        }
+
+        function resetAllPlayers() {
+            addLog('🔄 Réinitialisation de tous les joueurs...', 'warning');
+            
+            for (let i = 1; i <= 4; i++) {
+                const lifeSpan = document.getElementById(`player${i}-life`);
+                const syncStatus = document.getElementById(`player${i}-sync`);
+                const questionDiv = document.getElementById(`player${i}-question`);
+                
+                lifeSpan.innerHTML = '❤️ 3';
+                players[i].life = 3;
+                questionDiv.textContent = 'En attente...';
+                
+                syncStatus.textContent = '🔄';
+                syncStatus.style.color = '#fbbf24';
+                
+                setTimeout(() => {
+                    syncStatus.textContent = '✅';
+                    syncStatus.style.color = '#4CAF50';
+                }, 1000);
+            }
+        }
+
+        function startAllCombat() {
+            addLog('⚔️ Démarrage du combat pour tous les joueurs...', 'info');
+            
+            for (let i = 1; i <= 4; i++) {
+                const frame = document.getElementById(`player${i}-frame`);
+                
+                frame.contentWindow.postMessage({
+                    type: 'DEBUG_COMMAND',
+                    command: 'demarrerCombat'
+                }, '*');
+            }
+            
+            addLog('✅ Combat démarré pour tous les joueurs', 'success');
+        }
+
+        // ===========================
+        // GESTION DE LA PROGRESSION
+        // ===========================
+
+        function setProgress(playerId, maxLevel) {
+            // Générer les niveaux complétés
+            const niveauxCompletes = [];
+            for (let i = 1; i <= maxLevel; i++) {
+                niveauxCompletes.push(i);
+            }
+            
+            players[playerId].progress = niveauxCompletes;
+            
+            // Mettre à jour l'affichage
+            document.getElementById(`player${playerId}-progress`).textContent = `${niveauxCompletes.length}/21`;
+            
+            // Sauvegarder dans le localStorage du joueur (via l'iframe)
+            const save = {
+                niveauActuel: maxLevel < 21 ? maxLevel + 1 : 21,
+                niveauxCompletes: niveauxCompletes,
+                viesHero: 3
+            };
+            
+            const frame = document.getElementById(`player${playerId}-frame`);
+            frame.contentWindow.postMessage({
+                type: 'DEBUG_SET_SAVE',
+                save: save
+            }, '*');
+            
+            addLog(`📊 Joueur ${playerId} - Progression: ${niveauxCompletes.length}/21`, 'success');
+            
+            // Message spécial si arène débloquée
+            if (maxLevel >= 21) {
+                addLog(`🏆 JOUEUR ${playerId} - ARÈNE DÉBLOQUÉE !`, 'success');
+            }
+        }
+
+        // ===========================
+        // SCÉNARIOS DE TEST
+        // ===========================
+
+        function scenarioComplet() {
+            setProgress(1, 21);
+            addLog('🎯 Joueur 1: Tous les niveaux complétés (Arène dispo)', 'success');
+        }
+
+        function scenarioIntermediaire() {
+            setProgress(2, 10);
+            addLog('📊 Joueur 2: Niveau 10 atteint', 'info');
+        }
+
+        function scenarioDebutant() {
+            setProgress(3, 5);
+            addLog('🌱 Joueur 3: Niveau 5 atteint', 'info');
+        }
+
+        function scenarioNoob() {
+            setProgress(4, 0);
+            addLog('🆕 Joueur 4: Débutant (aucun niveau)', 'info');
+        }
+
+        // ===========================
+        // ENVOI DE RÉPONSES
+        // ===========================
+
+        function injectAnswer(playerId, answer) {
+            const frame = document.getElementById(`player${playerId}-frame`);
+            
+            addLog(`📨 Joueur ${playerId}: Injection de "${answer}"`, 'info');
+            
+            // Marquer le joueur comme actif
+            document.getElementById(`player${playerId}-cell`).classList.add('active-turn');
+            setTimeout(() => {
+                document.getElementById(`player${playerId}-cell`).classList.remove('active-turn');
+            }, 500);
+            
+            frame.contentWindow.postMessage({
+                type: 'DEBUG_INJECT_ANSWER',
+                answer: answer
+            }, '*');
+        }
+
+        function sendAnswer(playerId) {
+            const input = document.getElementById(`player${playerId}-answer`);
+            const answer = input.value.trim();
+            
+            if (answer) {
+                injectAnswer(playerId, answer);
+                input.value = '';
+            }
+        }
+
+        function toggleAutoAnswer() {
+            autoAnswer = !autoAnswer;
+            const btn = document.getElementById('auto-answer-btn');
+            btn.textContent = autoAnswer ? '🤖 AUTO ON' : '🤖 AUTO OFF';
+            btn.style.background = autoAnswer ? '#4CAF50' : '';
+            
+            if (autoAnswer) {
+                startAutoAnswer();
+            } else {
+                if (autoAnswerTimer) {
+                    clearInterval(autoAnswerTimer);
+                    autoAnswerTimer = null;
+                }
+            }
+            
+            addLog(`🤖 Mode auto-réponse: ${autoAnswer ? 'ON' : 'OFF'}`, 'info');
+        }
+
+        function startAutoAnswer() {
+            if (autoAnswerTimer) clearInterval(autoAnswerTimer);
+            
+            autoAnswerTimer = setInterval(() => {
+                if (!autoAnswer) return;
+                
+                const answers = ['aie', 'sois', 'sache', 'fasse', 'puisse', 'aille', 'vienne'];
+                
+                for (let i = 1; i <= 4; i++) {
+                    if (Math.random() > 0.7) {
+                        const randomAnswer = answers[Math.floor(Math.random() * answers.length)];
+                        injectAnswer(i, randomAnswer);
+                    }
+                }
+            }, 3000);
+        }
+
+        // ===========================
+        // OUVERTURE DES PAGES DE TEST
+        // ===========================
+
+        function openLancerDuel() {
+            addLog('⚔️ Ouverture de lancer-duel.html', 'info');
+            window.open('lancer-duel.html', '_blank');
+        }
+
+        function openSalleAttente() {
+            addLog('⏳ Ouverture de salle-attente.html', 'info');
+            
+            // Simuler une salle créée
+            sessionStorage.setItem('duel_room_code', 'TEST' + Math.floor(Math.random()*1000));
+            sessionStorage.setItem('duel_is_creator', 'true');
+            sessionStorage.setItem('duel_level', '10');
+            sessionStorage.setItem('duel_health', '10');
+            sessionStorage.setItem('duel_timeLimit', '10000');
+            sessionStorage.setItem('duel_character', 'hero');
+            
+            window.open('salle-attente.html', '_blank');
+        }
+
+        function openDuelPage() {
+            addLog('🎮 Ouverture de duel.html', 'info');
+            window.open('duel.html', '_blank');
+        }
+
+        function openArenaConfig() {
+            addLog('🏟️ Ouverture de duel.html?mode=arena', 'info');
+            window.open('duel.html?mode=arena', '_blank');
+        }
+
+        // ===========================
+        // SIMULATION DUEL ENTRE JOUEURS
+        // ===========================
+
+        function startDuel(player1, player2) {
+            addLog(`⚔️ Duel entre Joueur ${player1} et Joueur ${player2}`, 'info');
+            
+            const frame1 = document.getElementById(`player${player1}-frame`);
+            const frame2 = document.getElementById(`player${player2}-frame`);
+            const niveau = document.getElementById('niveau-select').value;
+            
+            frame1.src = `combat.html?niveau=${niveau}&debug=1&duel=1&opponent=${player2}&t=${Date.now()}`;
+            frame2.src = `combat.html?niveau=${niveau}&debug=1&duel=1&opponent=${player1}&t=${Date.now()}`;
+            
+            addLog(`✅ Duel initialisé au niveau ${niveau}`, 'success');
+        }
+
+        // ===========================
+        // ÉCOUTE DES MESSAGES DES IFRAMES
+        // ===========================
+
+        window.addEventListener('message', (event) => {
+            if (!event.data || !event.data.type) return;
+            
+            const { type, player, data } = event.data;
+            
+            switch(type) {
+                case 'PLAYER_READY':
+                    addLog(`✅ Joueur ${player} prêt`, 'success');
+                    document.getElementById(`player${player}-sync`).textContent = '✅';
+                    break;
+                    
+                case 'PLAYER_ANSWER':
+                    addLog(`📝 Joueur ${player}: ${data.answer}`, 'info');
+                    break;
+                    
+                case 'PLAYER_LIFE_CHANGE':
+                    const lifeSpan = document.getElementById(`player${player}-life`);
+                    lifeSpan.innerHTML = `❤️ ${data.life}`;
+                    players[player].life = data.life;
+                    
+                    if (data.life <= 0) {
+                        addLog(`💀 Joueur ${player} est mort !`, 'error');
+                    }
+                    break;
+                    
+                case 'PLAYER_QUESTION':
+                    document.getElementById(`player${player}-question`).textContent = 
+                        `❓ ${data.question.substring(0, 30)}...`;
+                    break;
+                    
+                case 'PLAYER_VICTORY':
+                    addLog(`🏆 Joueur ${player} a gagné !`, 'success');
+                    document.getElementById(`player${player}-cell`).style.borderColor = '#4CAF50';
+                    break;
+                    
+                case 'PLAYER_DEFEAT':
+                    addLog(`💔 Joueur ${player} a perdu !`, 'error');
+                    document.getElementById(`player${player}-cell`).style.borderColor = '#f44336';
+                    break;
+            }
+        });
+
+        // ===========================
+        // EXPOSITION GLOBALE
+        // ===========================
+
+        window.syncAllPlayers = syncAllPlayers;
+        window.resetAllPlayers = resetAllPlayers;
+        window.startAllCombat = startAllCombat;
+        window.injectAnswer = injectAnswer;
+        window.sendAnswer = sendAnswer;
+        window.toggleAutoAnswer = toggleAutoAnswer;
+        window.startDuel = startDuel;
+        
+        window.setProgress = setProgress;
+        window.scenarioComplet = scenarioComplet;
+        window.scenarioIntermediaire = scenarioIntermediaire;
+        window.scenarioDebutant = scenarioDebutant;
+        window.scenarioNoob = scenarioNoob;
+        
+        window.openLancerDuel = openLancerDuel;
+        window.openSalleAttente = openSalleAttente;
+        window.openDuelPage = openDuelPage;
+        window.openArenaConfig = openArenaConfig;
+    </script>
+</body>
+</html>

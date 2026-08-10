@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==============================
+    // JOUEURS : lecture libre, écriture validée
+    // ==============================
+    match /joueurs/{userId} {
+      allow read: if true;
+
+      // Création : progression initiale valide (niveau 1, 0 niveaux complétés)
+      allow create: if request.resource.data.keys().hasAll(['pseudo', 'progression'])
+        && request.resource.data.progression.niveauActuel == 1
+        && request.resource.data.progression.niveauxCompletes.size() == 0;
+
+      // Mise à jour : on vérifie que la progression ne saute pas de niveaux
+      allow update: if progressionValide(resource.data.progression, request.resource.data.progression);
+    }
+
+    // ==============================
+    // DUELS ET INVITATIONS : libres (gameplay temps réel)
+    // ==============================
+    match /duels/{duelId} {
+      allow read, write: if true;
+      match /tours/{tourId} {
+        allow read, write: if true;
+      }
+    }
+
+    match /invitations/{invId} {
+      allow read, write: if true;
+    }
+
+    // ==============================
+    // RÈGLE DE VALIDATION DE PROGRESSION
+    // Un joueur ne peut compléter que le niveau qu'il était en train de faire
+    // et ne peut pas avoir plus de niveaux complétés qu'avant
+    // ==============================
+    function progressionValide(avant, apres) {
+      // Autoriser les mises à jour sans changement de progression (connexion, enLigne, etc.)
+      let avantCompletes = avant == null ? [] : avant.niveauxCompletes;
+      let apresCompletes = apres == null ? [] : apres.niveauxCompletes;
+
+      // Pas de régression ni de saut
+      let nbAvant = avantCompletes.size();
+      let nbApres = apresCompletes.size();
+
+      // On peut ajouter au maximum 1 niveau à la fois
+      // Et le nouveau niveau doit être exactement niveauActuel d'avant
+      return nbApres <= nbAvant + 1
+        && (nbApres == nbAvant || (
+          nbApres == nbAvant + 1
+          && apresCompletes.hasAll(avantCompletes)
+        ));
+    }
+  }
+}

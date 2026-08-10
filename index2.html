@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conjugo Quest - Accueil</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Titre principal */
+        .main-title {
+            font-size: 4em;
+            color: #fbbf24;
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: text-shadow 0.3s;
+        }
+
+        .main-title:hover {
+            text-shadow: 0 0 50px rgba(251, 191, 36, 0.8);
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.3em;
+            margin-bottom: 50px;
+        }
+
+        /* Grille des modes de jeu */
+        .game-modes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+
+        .mode-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #8B4513;
+            border-radius: 20px;
+            padding: 40px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-10px);
+            border-color: #fbbf24;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .mode-card.aventure { border-color: #fbbf24; }
+        .mode-card.duel { border-color: #f43f5e; }
+
+        .mode-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .mode-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .mode-description {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+
+        /* Section connexion */
+        .login-section {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #fbbf24;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 400px;
+            margin: 0 auto 20px;
+        }
+
+        .login-section h2 {
+            color: #fbbf24;
+            margin-bottom: 20px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #8B4513;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1em;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #fbbf24;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(145deg, #fbbf24, #f59e0b);
+            color: #1a1a2e;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.5);
+        }
+
+        .btn-danger {
+            background: rgba(244, 67, 54, 0.2);
+            border: 2px solid #f44336;
+            color: #f44336;
+        }
+
+        .btn-danger:hover {
+            background: rgba(244, 67, 54, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-admin {
+            background: linear-gradient(145deg, #f43f5e, #c2185b);
+            color: white;
+        }
+
+        .btn-admin-cancel {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .guest-mode {
+            margin-top: 20px;
+            color: #94a3b8;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .guest-mode:hover {
+            color: #fbbf24;
+        }
+
+        /* Panneau Admin */
+        .admin-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-box {
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #f43f5e;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .admin-box h2 {
+            color: #f43f5e;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .admin-box input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #f43f5e;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1em;
+        }
+
+        .admin-box input:focus {
+            outline: none;
+            border-color: #ff1744;
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .admin-buttons button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .admin-panel {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #f43f5e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .admin-panel h3 {
+            color: #f43f5e;
+            margin-bottom: 15px;
+        }
+
+        .admin-user {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #8B4513;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .admin-user .user-info {
+            flex: 1;
+        }
+
+        .admin-user .user-name {
+            font-weight: bold;
+        }
+
+        .admin-user .user-progress {
+            color: #94a3b8;
+            font-size: 0.8em;
+        }
+
+        .admin-user button {
+            background: #f43f5e;
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .admin-user button:hover {
+            background: #ff1744;
+        }
+
+        .admin-error {
+            color: #f44336;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .admin-footer {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .admin-footer button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-delete-all {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-close {
+            background: #333;
+            color: white;
+        }
+
+        /* Quitter */
+        .quit-button {
+            margin-top: 20px;
+        }
+
+        /* Utilitaires */
+        .text-green { color: #4CAF50; }
+        .text-white { color: #fff; }
+    </style>
+</head>
+<body>
+    <!-- Overlay Admin -->
+    <div id="adminOverlay" class="admin-overlay">
+        <div class="admin-box">
+            <h2>🔐 ADMIN</h2>
+            <input type="password" id="adminPassword" placeholder="Mot de passe admin" 
+                   onkeypress="if(event.key === 'Enter') Admin.checkPassword()">
+            <div class="admin-buttons">
+                <button class="btn-admin" onclick="Admin.checkPassword()">✓ Valider</button>
+                <button class="btn-admin-cancel" onclick="Admin.closeOverlay()">✕ Annuler</button>
+            </div>
+            <div id="adminError" class="admin-error"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="main-title" onclick="Admin.showOverlay()">CONJUGO QUEST</h1>
+        <div class="subtitle">Le combat ultime de la conjugaison</div>
+
+        <!-- Modes de jeu -->
+        <div class="game-modes">
+            <div class="mode-card aventure" onclick="Game.launchMode('aventure')">
+                <div class="mode-icon">⚔️</div>
+                <div class="mode-name">AVENTURE</div>
+                <div class="mode-description">Affronte les 21 gardiens des tours</div>
+            </div>
+            
+            <div class="mode-card duel" onclick="Game.launchMode('duel')">
+                <div class="mode-icon">⚔️👥</div>
+                <div class="mode-name">DUEL / ARÈNE</div>
+                <div class="mode-description">Affronte d'autres joueurs en ligne</div>
+            </div>
+        </div>
+
+        <!-- Connexion -->
+        <div class="login-section">
+            <h2>🔐 Connexion</h2>
+            <div class="login-form">
+                <input type="text" id="pseudo" placeholder="Ton pseudo de héros" value="Héros" maxlength="20">
+                <button class="btn btn-primary" onclick="Auth.login()">🛡️ SE CONNECTER</button>
+            </div>
+            <div class="guest-mode" onclick="Auth.guest()">
+                Continuer en mode invité
+            </div>
+        </div>
+        
+        <!-- Panneau Admin -->
+        <div id="adminPanel" class="admin-panel"></div>
+        
+        <!-- Quitter -->
+        <div class="quit-button">
+            <button class="btn btn-danger" onclick="Game.quit()">
+                🚪 Quitter le jeu
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Constantes
+        const CONSTANTS = {
+            ADMIN_PASSWORD: "0622628003",
+            BANNED_WORDS: ['connard', 'salope', 'pute', 'enculé', 'fdp', 'ntm', 'pd', 'bitch', 'fuck', 'shit']
+        };
+
+        // Storage Manager
+        const Storage = {
+            getPlayers() {
+                return JSON.parse(localStorage.getItem('conjugoquest_players') || '[]');
+            },
+
+            savePlayers(players) {
+                localStorage.setItem('conjugoquest_players', JSON.stringify(players));
+            },
+
+            getCurrentPlayer() {
+                return localStorage.getItem('conjugoquest_current_player');
+            },
+
+            setCurrentPlayer(playerId) {
+                localStorage.setItem('conjugoquest_current_player', playerId);
+            },
+
+            getPlayerName() {
+                return localStorage.getItem('conjugoquest_player_name') || 'Invité';
+            },
+
+            setPlayerName(name) {
+                localStorage.setItem('conjugoquest_player_name', name);
+            },
+
+            getSave() {
+                return JSON.parse(localStorage.getItem('conjugoquest_save') || 'null');
+            },
+
+            setSave(save) {
+                localStorage.setItem('conjugoquest_save', JSON.stringify(save));
+            },
+
+            removeCurrentPlayer() {
+                localStorage.removeItem('conjugoquest_current_player');
+            }
+        };
+
+        // Gestionnaire d'authentification
+        const Auth = {
+            isPseudoInappropriate(pseudo) {
+                const lower = pseudo.toLowerCase();
+                return CONSTANTS.BANNED_WORDS.some(mot => lower.includes(mot));
+            },
+
+            login() {
+                const pseudo = document.getElementById('pseudo').value.trim();
+                
+                if (!pseudo) {
+                    alert("Entre un pseudo !");
+                    return;
+                }
+                
+                if (this.isPseudoInappropriate(pseudo)) {
+                    if (!confirm("⚠️ Ce pseudo pourrait être inapproprié. Veux-tu quand même continuer ?")) {
+                        return;
+                    }
+                }
+                
+                const players = Storage.getPlayers();
+                let existingPlayer = players.find(p => p.name.toLowerCase() === pseudo.toLowerCase());
+                
+                if (existingPlayer) {
+                    Storage.setCurrentPlayer(existingPlayer.id);
+                    Storage.setPlayerName(existingPlayer.name);
+                    Storage.setSave(existingPlayer.save);
+                    alert(`✅ Bienvenue ${existingPlayer.name} !`);
+                } else {
+                    const newPlayer = {
+                        id: 'player_' + Date.now(),
+                        name: pseudo,
+                        createdAt: new Date().toISOString(),
+                        save: {
+                            niveauActuel: 1,
+                            niveauxCompletes: [],
+                            viesHero: 3
+                        }
+                    };
+                    
+                    players.push(newPlayer);
+                    Storage.savePlayers(players);
+                    Storage.setCurrentPlayer(newPlayer.id);
+                    Storage.setPlayerName(newPlayer.name);
+                    Storage.setSave(newPlayer.save);
+                    
+                    alert(`✅ Nouveau héros "${pseudo}" créé !`);
+                }
+                
+                window.location.href = 'intro.html';
+            },
+
+            guest() {
+                Storage.setPlayerName('Invité');
+                Storage.setSave({
+                    niveauActuel: 1,
+                    niveauxCompletes: [],
+                    viesHero: 3
+                });
+                window.location.href = 'intro.html';
+            }
+        };
+
+        // Gestionnaire du jeu
+        const Game = {
+            launchMode(mode) {
+                if (!Storage.getPlayerName()) {
+                    alert("Connecte-toi d'abord !");
+                    return;
+                }
+                
+                const pages = {
+                    aventure: 'intro.html',
+                    duel: 'duel.html'
+                };
+                
+                window.location.href = pages[mode] || 'intro.html';
+            },
+
+            quit() {
+                if (confirm("🚪 Quitter le jeu ?\n(La progression sera sauvegardée)")) {
+                    window.location.href = 'login.html';
+                }
+            }
+        };
+
+        // Gestionnaire Admin
+        const Admin = {
+            showOverlay() {
+                document.getElementById('adminOverlay').style.display = 'flex';
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminError').textContent = '';
+            },
+
+            closeOverlay() {
+                document.getElementById('adminOverlay').style.display = 'none';
+            },
+
+            checkPassword() {
+                const password = document.getElementById('adminPassword').value;
+                
+                if (password === CONSTANTS.ADMIN_PASSWORD) {
+                    this.closeOverlay();
+                    this.showPanel();
+                } else {
+                    document.getElementById('adminError').textContent = '❌ Mot de passe incorrect';
+                }
+            },
+
+            showPanel() {
+                const panel = document.getElementById('adminPanel');
+                const players = Storage.getPlayers();
+                const currentPlayer = Storage.getCurrentPlayer();
+                
+                if (players.length === 0) {
+                    panel.innerHTML = '<p style="color: #94a3b8;">Aucun joueur enregistré</p>';
+                    panel.style.display = 'block';
+                    return;
+                }
+                
+                let html = '<h3>👥 Gestion des joueurs</h3>';
+                
+                players.forEach(player => {
+                    const isActive = player.id === currentPlayer;
+                    html += `
+                        <div class="admin-user">
+                            <div class="user-info">
+                                <div class="user-name ${isActive ? 'text-green' : 'text-white'}">${player.name}</div>
+                                <div class="user-progress">${player.save?.niveauxCompletes?.length || 0}/21 niveaux</div>
+                            </div>
+                            <button onclick="Admin.deletePlayer('${player.id}')">🗑️ Supprimer</button>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                    <div class="admin-footer">
+                        <button class="btn-delete-all" onclick="Admin.deleteAll()">⚠️ TOUT SUPPRIMER</button>
+                        <button class="btn-close" onclick="Admin.hidePanel()">✕ Fermer</button>
+                    </div>
+                `;
+                
+                panel.innerHTML = html;
+                panel.style.display = 'block';
+            },
+
+            hidePanel() {
+                document.getElementById('adminPanel').style.display = 'none';
+            },
+
+            deletePlayer(playerId) {
+                if (!confirm("⚠️ Supprimer définitivement ce joueur ?")) return;
+                
+                let players = Storage.getPlayers();
+                const index = players.findIndex(p => p.id === playerId);
+                
+                if (index >= 0) {
+                    players.splice(index, 1);
+                    Storage.savePlayers(players);
+                    
+                    if (Storage.getCurrentPlayer() === playerId) {
+                        if (players.length > 0) {
+                            Storage.setCurrentPlayer(players[0].id);
+                            Storage.setPlayerName(players[0].name);
+                            Storage.setSave(players[0].save);
+                        } else {
+                            Storage.removeCurrentPlayer();
+                            Auth.guest();
+                            return;
+                        }
+                    }
+                    
+                    this.showPanel();
+                    alert("✅ Joueur supprimé !");
+                }
+            },
+
+            deleteAll() {
+                if (!confirm("⚠️⚠️⚠️ SUPPRIMER TOUS LES JOUEURS ?\nCette action est irréversible !")) return;
+                
+                localStorage.removeItem('conjugoquest_players');
+                localStorage.removeItem('conjugoquest_current_player');
+                Auth.guest();
+            }
+        };
+
+        // Fermer l'overlay admin si on clique en dehors
+        window.onclick = function(event) {
+            const overlay = document.getElementById('adminOverlay');
+            if (event.target === overlay) {
+                Admin.closeOverlay();
+            }
+        };
+    </script>
+</body>
+</html>

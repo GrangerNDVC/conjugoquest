@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 Éditeur d'Arène - Conjugo Quest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fbbf24;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+        }
+
+        .btn-retour {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #fbbf24;
+            border-radius: 8px;
+            color: #fbbf24;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-retour:hover {
+            background: rgba(251, 191, 36, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 20px;
+        }
+
+        /* PANEL DE CONFIGURATION */
+        .config-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #8B4513;
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .panel-section h2 {
+            color: #fbbf24;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* SÉLECTEUR DE PERSONNAGES */
+        .character-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .character-tab {
+            flex: 1;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #8B4513;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .character-tab.hero {
+            border-color: #4CAF50;
+        }
+
+        .character-tab.hero.active {
+            background: rgba(76, 175, 80, 0.2);
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .character-tab.enemy {
+            border-color: #f43f5e;
+        }
+
+        .character-tab.enemy.active {
+            background: rgba(244, 63, 94, 0.2);
+            border-color: #f43f5e;
+            color: #f43f5e;
+        }
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .character-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #8B4513;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .character-card:hover {
+            transform: translateY(-3px);
+            border-color: #fbbf24;
+            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.3);
+        }
+
+        .character-card.selected {
+            border-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.2);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+        }
+
+        .character-card.hero.selected {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.2);
+        }
+
+        .character-card.enemy.selected {
+            border-color: #f43f5e;
+            background: rgba(244, 63, 94, 0.2);
+        }
+
+        .character-emoji {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+
+        .character-name {
+            font-size: 0.8em;
+            color: #94a3b8;
+        }
+
+        /* CONTRÔLES */
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: flex;
+            justify-content: space-between;
+            color: #94a3b8;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .control-group .range-value {
+            color: #fbbf24;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            -webkit-appearance: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #fbbf24;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px #fbbf24;
+        }
+
+        .control-group select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #8B4513;
+            border-radius: 6px;
+            color: #fff;
+            font-family: 'Cinzel', serif;
+        }
+
+        .color-inputs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .color-inputs input[type="color"] {
+            flex: 1;
+            height: 40px;
+            background: transparent;
+            border: 2px solid #8B4513;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* BOUTONS */
+        .btn {
+            padding: 12px 20px;
+            font-family: 'Cinzel', serif;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(145deg, #fbbf24, #f59e0b);
+            color: #1a1a2e;
+        }
+
+        .btn-success {
+            background: linear-gradient(145deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* PRÉVISUALISATION */
+        .preview-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #8B4513;
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .preview-title {
+            color: #fbbf24;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .preview-area {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background: #0a0a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid #8B4513;
+        }
+
+        #preview-character {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(145deg, #4a2c1a, #6b4226);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            border: 3px solid #fbbf24;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
+            z-index: 10;
+        }
+
+        #preview-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            pointer-events: none;
+        }
+
+        .preview-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border-width: 3px;
+            animation: spin 8s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        #preview-projectile {
+            position: absolute;
+            bottom: 140px;
+            left: 40%;
+            width: 30px;
+            height: 30px;
+            animation: float 2s ease-in-out infinite;
+            z-index: 20;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        /* PERSONNAGES SAUVEGARDÉS */
+        .saved-list {
+            margin-top: 20px;
+            max-height: 150px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .saved-item {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .saved-item:hover {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: #fbbf24;
+        }
+
+        .saved-item .char-name {
+            color: #fbbf24;
+        }
+
+        .saved-item .char-time {
+            color: #94a3b8;
+            font-size: 0.8em;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #fbbf24;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <a href="debug.html" class="btn-retour">⬅️ Retour au debug</a>
+    
+    <div class="container">
+        <h1>🎨 Éditeur de Personnage d'Arène</h1>
+
+        <div class="layout">
+            <!-- PANEL DE CONFIGURATION -->
+            <div class="config-panel">
+                <!-- SÉLECTION DU PERSONNAGE -->
+                <div class="panel-section">
+                    <h2>👤 1. Choisis ton personnage</h2>
+                    
+                    <div class="character-tabs">
+                        <div class="character-tab hero active" onclick="showTab('hero')">HÉROS</div>
+                        <div class="character-tab enemy" onclick="showTab('enemy')">GARDIENS</div>
+                    </div>
+
+                    <div id="hero-grid" class="character-grid">
+                        <!-- Héros générés dynamiquement -->
+                    </div>
+
+                    <div id="enemy-grid" class="character-grid" style="display: none;">
+                        <!-- Ennemis générés dynamiquement -->
+                    </div>
+                </div>
+
+                <!-- CONFIGURATION DU PROJECTILE -->
+                <div class="panel-section">
+                    <h2>🔮 2. Projectile</h2>
+                    
+                    <div class="control-group">
+                        <label>
+                            <span>Taille</span>
+                            <span class="range-value" id="proj-size-val">30px</span>
+                        </label>
+                        <input type="range" id="proj-size" min="20" max="60" value="30">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Forme</label>
+                        <select id="proj-shape">
+                            <option value="circle">Cercle</option>
+                            <option value="triangle-right">Triangle →</option>
+                            <option value="triangle-left">Triangle ←</option>
+                            <option value="triangle-up">Triangle ↑</option>
+                            <option value="triangle-down">Triangle ↓</option>
+                            <option value="star">Étoile</option>
+                            <option value="lightning">Foudre</option>
+                            <option value="light">Lumière</option>
+                            <option value="flame">Flamme</option>
+                            <option value="square">Carré</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Couleurs</label>
+                        <div class="color-inputs">
+                            <input type="color" id="proj-color1" value="#4169E1">
+                            <input type="color" id="proj-color2" value="#1E90FF">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>
+                            <span>Intensité de la lueur</span>
+                            <span class="range-value" id="proj-glow-val">40px</span>
+                        </label>
+                        <input type="range" id="proj-glow" min="10" max="80" value="40">
+                    </div>
+                </div>
+
+                <!-- CONFIGURATION DU CERCLE -->
+                <div class="panel-section">
+                    <h2>⭕ 3. Cercle d'incantation</h2>
+                    
+                    <div class="control-group">
+                        <label>
+                            <span>Nombre d'anneaux</span>
+                            <span class="range-value" id="ring-count-val">4</span>
+                        </label>
+                        <input type="range" id="ring-count" min="2" max="6" value="4">
+                    </div>
+
+                    <div class="control-group">
+                        <label>
+                            <span>Écartement</span>
+                            <span class="range-value" id="ring-spacing-val">25px</span>
+                        </label>
+                        <input type="range" id="ring-spacing" min="15" max="45" value="25">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Style</label>
+                        <select id="ring-style">
+                            <option value="dashed">Pointillés</option>
+                            <option value="solid">Ligne continue</option>
+                            <option value="double">Double ligne</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label>
+                            <span>Vitesse de rotation</span>
+                            <span class="range-value" id="speed-val">8s</span>
+                        </label>
+                        <input type="range" id="speed" min="3" max="15" value="8">
+                    </div>
+
+                    <div class="control-group">
+                        <label>Couleur des anneaux</label>
+                        <input type="color" id="ring-color" value="#6495ED">
+                    </div>
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="saveCharacter()" style="flex: 2;">💾 Sauvegarder</button>
+                    <button class="btn btn-success" onclick="exportCharacter()" style="flex: 1;">📥 Exporter</button>
+                </div>
+
+                <!-- PERSONNAGES SAUVEGARDÉS -->
+                <div class="saved-list" id="saved-list">
+                    <div style="color: #94a3b8; text-align: center; padding: 10px;">Aucun personnage sauvegardé</div>
+                </div>
+            </div>
+
+            <!-- PRÉVISUALISATION -->
+            <div class="preview-panel">
+                <div class="preview-title">👁️ PRÉVISUALISATION EN DIRECT</div>
+                
+                <div class="preview-area">
+                    <div id="preview-character">⚔️</div>
+                    <div id="preview-circle"></div>
+                    <div id="preview-projectile"></div>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button class="btn btn-primary" onclick="testInArena()" style="padding: 10px 20px;">
+                        🏆 Tester dans l'arène
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===========================
+        // CONFIGURATION DES PERSONNAGES
+        // ===========================
+
+        // Héros : versions 1, 9, 12, 15, 19, 21
+        const HEROES = [
+            { id: 'hero1', name: 'Héros Niv 1', emoji: '⚔️', level: 1 },
+            { id: 'hero9', name: 'Héros Niv 9', emoji: '👑', level: 9 },
+            { id: 'hero12', name: 'Héros Niv 12', emoji: '🔥', level: 12 },
+            { id: 'hero15', name: 'Héros Niv 15', emoji: '⚡', level: 15 },
+            { id: 'hero19', name: 'Héros Niv 19', emoji: '🌑', level: 19 },
+            { id: 'hero21', name: 'Héros Niv 21', emoji: '✨', level: 21 }
+        ];
+
+        // Ennemis : tous les niveaux
+        const ENEMIES = Array.from({ length: 21 }, (_, i) => ({
+            id: `enemy${i+1}`,
+            name: `Gardien Niv ${i+1}`,
+            emoji: i < 5 ? '👾' : (i < 10 ? '👹' : (i < 15 ? '💀' : (i < 20 ? '👁️' : '🐉'))),
+            level: i+1
+        }));
+
+        let currentCharacter = {
+            type: 'hero',
+            id: 'hero1',
+            name: 'Héros Niv 1',
+            emoji: '⚔️'
+        };
+
+        let savedCharacters = [];
+        let previewTimeout = null;
+
+        // ===========================
+        // INITIALISATION
+        // ===========================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            generateCharacterGrids();
+            loadSavedCharacters();
+            setupEventListeners();
+            updatePreview();
+        });
+
+        function generateCharacterGrids() {
+            // Grille des héros
+            const heroGrid = document.getElementById('hero-grid');
+            heroGrid.innerHTML = '';
+            
+            HEROES.forEach(hero => {
+                const card = document.createElement('div');
+                card.className = `character-card hero ${hero.id === 'hero1' ? 'selected' : ''}`;
+                card.dataset.id = hero.id;
+                card.dataset.type = 'hero';
+                card.dataset.emoji = hero.emoji;
+                card.dataset.name = hero.name;
+                card.innerHTML = `
+                    <div class="character-emoji">${hero.emoji}</div>
+                    <div class="character-name">${hero.name}</div>
+                `;
+                card.onclick = () => selectCharacter('hero', hero.id, hero.emoji, hero.name);
+                heroGrid.appendChild(card);
+            });
+
+            // Grille des ennemis
+            const enemyGrid = document.getElementById('enemy-grid');
+            enemyGrid.innerHTML = '';
+            
+            ENEMIES.forEach(enemy => {
+                const card = document.createElement('div');
+                card.className = 'character-card enemy';
+                card.dataset.id = enemy.id;
+                card.dataset.type = 'enemy';
+                card.dataset.emoji = enemy.emoji;
+                card.dataset.name = enemy.name;
+                card.innerHTML = `
+                    <div class="character-emoji">${enemy.emoji}</div>
+                    <div class="character-name">${enemy.name}</div>
+                `;
+                card.onclick = () => selectCharacter('enemy', enemy.id, enemy.emoji, enemy.name);
+                enemyGrid.appendChild(card);
+            });
+        }
+
+        function selectCharacter(type, id, emoji, name) {
+            currentCharacter = { type, id, emoji, name };
+            
+            // Mettre à jour les classes selected
+            document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
+            event.target.closest('.character-card').classList.add('selected');
+            
+            // Mettre à jour la prévisualisation
+            document.getElementById('preview-character').textContent = emoji;
+            
+            updatePreview();
+        }
+
+        function showTab(tab) {
+            document.querySelectorAll('.character-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('hero-grid').style.display = tab === 'hero' ? 'grid' : 'none';
+            document.getElementById('enemy-grid').style.display = tab === 'enemy' ? 'grid' : 'none';
+        }
+
+        // ===========================
+        // ÉVÉNEMENTS
+        // ===========================
+
+        function setupEventListeners() {
+            const inputs = document.querySelectorAll('input[type="range"], input[type="color"], select');
+            
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    updateDisplayValues();
+                    
+                    if (previewTimeout) clearTimeout(previewTimeout);
+                    previewTimeout = setTimeout(() => {
+                        updatePreview();
+                    }, 50);
+                });
+            });
+        }
+
+        function updateDisplayValues() {
+            document.getElementById('proj-size-val').textContent = 
+                document.getElementById('proj-size').value + 'px';
+            document.getElementById('proj-glow-val').textContent = 
+                document.getElementById('proj-glow').value + 'px';
+            document.getElementById('ring-count-val').textContent = 
+                document.getElementById('ring-count').value;
+            document.getElementById('ring-spacing-val').textContent = 
+                document.getElementById('ring-spacing').value + 'px';
+            document.getElementById('speed-val').textContent = 
+                document.getElementById('speed').value + 's';
+        }
+
+        // ===========================
+        // PRÉVISUALISATION (basée sur visual-config)
+        // ===========================
+
+        function updatePreview() {
+            requestAnimationFrame(() => {
+                // Projectile
+                const proj = document.getElementById('preview-projectile');
+                const size = document.getElementById('proj-size').value;
+                const color1 = document.getElementById('proj-color1').value;
+                const color2 = document.getElementById('proj-color2').value;
+                const glow = document.getElementById('proj-glow').value;
+                const shape = document.getElementById('proj-shape').value;
+
+                proj.style.width = size + 'px';
+                proj.style.height = size + 'px';
+                proj.style.background = `radial-gradient(circle, ${color1}, ${color2})`;
+                proj.style.boxShadow = `0 0 ${glow}px ${color1}`;
+                
+                // Application de la forme (copié depuis visual-config)
+                applyShape(proj, shape);
+
+                // Cercle
+                const circle = document.getElementById('preview-circle');
+                const ringCount = parseInt(document.getElementById('ring-count').value);
+                const ringSpacing = parseInt(document.getElementById('ring-spacing').value);
+                const ringStyle = document.getElementById('ring-style').value;
+                const speed = document.getElementById('speed').value;
+                const ringColor = document.getElementById('ring-color').value;
+
+                circle.innerHTML = '';
+                const baseSize = 350;
+
+                for (let i = 0; i < ringCount; i++) {
+                    const ring = document.createElement('div');
+                    ring.className = 'preview-ring';
+                    const size = baseSize - (i * ringSpacing);
+                    if (size < 50) break;
+                    
+                    ring.style.width = size + 'px';
+                    ring.style.height = size + 'px';
+                    ring.style.border = `3px ${ringStyle} ${ringColor}`;
+                    ring.style.animation = `spin ${speed}s linear infinite`;
+                    circle.appendChild(ring);
+                }
+            });
+        }
+
+        function applyShape(element, shape) {
+            // Copié directement depuis visual-config.js
+            if (shape === 'circle') {
+                element.style.borderRadius = '50%';
+            } else if (shape === 'triangle-right') {
+                element.style.clipPath = 'polygon(0% 0%, 0% 100%, 100% 50%)';
+            } else if (shape === 'triangle-left') {
+                element.style.clipPath = 'polygon(100% 0%, 100% 100%, 0% 50%)';
+            } else if (shape === 'triangle-up') {
+                element.style.clipPath = 'polygon(50% 0%, 0% 100%, 100% 100%)';
+            } else if (shape === 'triangle-down') {
+                element.style.clipPath = 'polygon(50% 100%, 0% 0%, 100% 0%)';
+            } else if (shape === 'star') {
+                element.style.clipPath = 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)';
+            } else if (shape === 'lightning') {
+                element.style.clipPath = 'polygon(50% 0%, 40% 30%, 60% 30%, 30% 60%, 50% 60%, 20% 100%, 55% 55%, 80% 70%, 55% 40%, 70% 10%)';
+            } else if (shape === 'light') {
+                element.style.clipPath = 'polygon(50% 0%, 70% 30%, 100% 50%, 70% 70%, 50% 100%, 30% 70%, 0% 50%, 30% 30%)';
+            } else if (shape === 'flame') {
+                element.style.borderRadius = '50% 0 50% 50%';
+                element.style.transform = 'rotate(-45deg)';
+            } else if (shape === 'square') {
+                element.style.borderRadius = '10%';
+            }
+        }
+
+        // ===========================
+        // SAUVEGARDE
+        // ===========================
+
+        function saveCharacter() {
+            const config = {
+                id: currentCharacter.id,
+                type: currentCharacter.type,
+                name: currentCharacter.name,
+                emoji: currentCharacter.emoji,
+                projectile: {
+                    size: parseInt(document.getElementById('proj-size').value),
+                    shape: document.getElementById('proj-shape').value,
+                    colors: [
+                        document.getElementById('proj-color1').value,
+                        document.getElementById('proj-color2').value
+                    ],
+                    glow: parseInt(document.getElementById('proj-glow').value)
+                },
+                circle: {
+                    ringCount: parseInt(document.getElementById('ring-count').value),
+                    ringSpacing: parseInt(document.getElementById('ring-spacing').value),
+                    ringStyle: document.getElementById('ring-style').value,
+                    speed: parseInt(document.getElementById('speed').value),
+                    color: document.getElementById('ring-color').value
+                },
+                savedAt: new Date().toISOString()
+            };
+
+            savedCharacters = savedCharacters.filter(c => c.id !== currentCharacter.id);
+            savedCharacters.push(config);
+            
+            localStorage.setItem('arena_characters', JSON.stringify(savedCharacters));
+            
+            updateSavedList();
+            alert('✅ Personnage sauvegardé !');
+        }
+
+        function loadSavedCharacters() {
+            const saved = localStorage.getItem('arena_characters');
+            if (saved) {
+                try {
+                    savedCharacters = JSON.parse(saved);
+                    updateSavedList();
+                } catch (e) {
+                    console.error('Erreur chargement sauvegardes');
+                }
+            }
+        }
+
+        function updateSavedList() {
+            const container = document.getElementById('saved-list');
+            if (!container) return;
+            
+            if (savedCharacters.length === 0) {
+                container.innerHTML = '<div style="color: #94a3b8; text-align: center; padding: 10px;">Aucun personnage sauvegardé</div>';
+                return;
+            }
+            
+            container.innerHTML = savedCharacters
+                .sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))
+                .map(char => `
+                    <div class="saved-item" onclick="loadCharacter('${char.id}')">
+                        <span class="char-name">${char.emoji} ${char.name}</span>
+                        <span class="char-time">${new Date(char.savedAt).toLocaleTimeString()}</span>
+                    </div>
+                `).join('');
+        }
+
+        function loadCharacter(id) {
+            const char = savedCharacters.find(c => c.id === id);
+            if (!char) return;
+
+            // Charger la configuration
+            document.getElementById('proj-size').value = char.projectile.size;
+            document.getElementById('proj-shape').value = char.projectile.shape;
+            document.getElementById('proj-color1').value = char.projectile.colors[0];
+            document.getElementById('proj-color2').value = char.projectile.colors[1];
+            document.getElementById('proj-glow').value = char.projectile.glow;
+            
+            document.getElementById('ring-count').value = char.circle.ringCount;
+            document.getElementById('ring-spacing').value = char.circle.ringSpacing;
+            document.getElementById('ring-style').value = char.circle.ringStyle;
+            document.getElementById('speed').value = char.circle.speed;
+            document.getElementById('ring-color').value = char.circle.color;
+            
+            // Mettre à jour le personnage
+            currentCharacter = {
+                id: char.id,
+                type: char.type,
+                name: char.name,
+                emoji: char.emoji
+            };
+            
+            document.getElementById('preview-character').textContent = char.emoji;
+            
+            // Mettre à jour la sélection
+            document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
+            
+            updateDisplayValues();
+            updatePreview();
+            alert('✅ Personnage chargé !');
+        }
+
+        function exportCharacter() {
+            const config = {
+                id: currentCharacter.id,
+                type: currentCharacter.type,
+                name: currentCharacter.name,
+                emoji: currentCharacter.emoji,
+                projectile: {
+                    size: parseInt(document.getElementById('proj-size').value),
+                    shape: document.getElementById('proj-shape').value,
+                    colors: [
+                        document.getElementById('proj-color1').value,
+                        document.getElementById('proj-color2').value
+                    ],
+                    glow: parseInt(document.getElementById('proj-glow').value)
+                },
+                circle: {
+                    ringCount: parseInt(document.getElementById('ring-count').value),
+                    ringSpacing: parseInt(document.getElementById('ring-spacing').value),
+                    ringStyle: document.getElementById('ring-style').value,
+                    speed: parseInt(document.getElementById('speed').value),
+                    color: document.getElementById('ring-color').value
+                }
+            };
+
+            const json = JSON.stringify(config, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `character_${currentCharacter.id}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('📥 Personnage exporté !');
+        }
+
+        function testInArena() {
+            saveCharacter();
+            alert('🏆 Personnage prêt pour l\'arène !');
+            window.location.href = 'lancer-duel.html?mode=arena';
+        }
+    </script>
+</body>
+</html>

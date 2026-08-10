@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conjugo Quest - Carte du Monde</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/map.css">
+</head>
+<body>
+    <a href="classements.html" style="position:fixed;top:15px;right:15px;z-index:9000;
+        padding:8px 14px;background:rgba(0,0,0,0.8);border:2px solid #fbbf24;
+        border-radius:8px;color:#fbbf24;font-family:'Cinzel',serif;font-size:0.8em;
+        text-decoration:none;cursor:pointer;">🏆 Classements</a>
+
+    <div id="carte-container">
+        <!-- Plateau avec toutes les tours -->
+        <div id="plateau">
+            <!-- Les tours seront générées en JavaScript -->
+        </div>
+        
+        <!-- Héros chibi -->
+        <img id="hero-chibi" src="img/map/hero_chibi.png" alt="Héros">
+        
+        <!-- Interface utilisateur -->
+        <div id="map-ui">
+            <div class="ui-top">
+                <h2>🗺️ Conjugo Quest - Aventure</h2>
+                <div class="stats">
+                    <span id="niveau-actuel">Niveau: 1/21</span>
+                    <span id="vies-hero">❤️❤️❤️</span>
+                </div>
+            </div>
+            
+            <button id="btn-retour-menu" onclick="retourMenu()">
+                🏠 Retour au Menu
+            </button>
+        </div>
+    </div>
+
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/save-system.js"></script>
+    <script src="js/map.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conjugo Quest - Carte du Monde</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/map.css">
+</head>
+<body>
+    <div id="carte-container">
+        <!-- Plateau avec toutes les tours -->
+        <div id="plateau">
+            <!-- Les tours seront générées en JavaScript -->
+        </div>
+        
+        <!-- Héros chibi -->
+        <img id="hero-chibi" src="img/map/hero_chibi.png" alt="Héros">
+        
+        <!-- Interface utilisateur -->
+        <div id="map-ui">
+            <div class="ui-top">
+                <h2>🗺️ Conjugo Quest - Aventure</h2>
+                <div class="stats">
+                    <span id="niveau-actuel">Niveau: 1/21</span>
+                    <span id="vies-hero">❤️❤️❤️</span>
+                </div>
+            </div>
+            
+            <button id="btn-retour-menu" onclick="retourMenu()">
+                🏠 Retour au Menu
+            </button>
+        </div>
+    </div>
+
+    <script src="js/map.js"></script>
+</body>
+</html>

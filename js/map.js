@@ -1,5 +1,6 @@
 // ===========================
 // CONJUGO QUEST - CARTE AVEC PORTALS DUEL/ARÈNE
+// (+ mode debug caché — voir tout en bas du fichier)
 // ===========================
 
 console.log("🗺️ Système de plateau avec portails chargé !");
@@ -183,6 +184,7 @@ window.addEventListener('load', () => {
     centrerCamera();
     mettreAJourUI();
     verifierInvitations(); // Démarre la vérification des invitations
+    initDeclencheurDebug(); // Active l'écoute clavier discrète du mode debug
 });
 
 function chargerProgression() {
@@ -492,4 +494,86 @@ function sauvegarderProgression() {
     } catch(e) {
         console.error("❌ sauvegarderProgression() échoué:", e);
     }
+}
+
+// ===========================================================
+// MODE DEBUG CACHÉ
+// ===========================================================
+// Aucun bouton, aucun texte "debug" dans le DOM ou la console.
+// Déclenchement : taper les 7 lettres "granger" au clavier,
+// n'importe où sur la page (aucun champ à cliquer avant).
+// Le mot de passe demandé ensuite n'est JAMAIS stocké en clair :
+// seul son hash SHA-256 est comparé, exactement comme pour
+// l'accès admin de admin-prive.html.
+//
+// En cas d'échec, rien ne s'affiche (pas de message d'erreur) :
+// un élève qui tombe sur le prompt par hasard n'a aucune preuve
+// qu'un mode debug existe réellement derrière.
+// ===========================================================
+
+const DEBUG_TRIGGER = 'granger';
+const DEBUG_HASH = "6d616e5b5db229bffa547956723a9f088c63f8782438a5712cf7321ba462aa04";
+let _debugBuffer = '';
+
+function initDeclencheurDebug() {
+    document.addEventListener('keydown', (e) => {
+        // Ignore les frappes faites dans un champ texte (pour ne pas gêner la saisie normale)
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+        _debugBuffer = (_debugBuffer + e.key).slice(-DEBUG_TRIGGER.length).toLowerCase();
+        if (_debugBuffer === DEBUG_TRIGGER) {
+            _debugBuffer = '';
+            ouvrirPromptDebug();
+        }
+    });
+}
+
+async function ouvrirPromptDebug() {
+    const pwd = prompt('🔒');
+    if (!pwd) return;
+
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(pwd));
+    const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+    if (hash !== DEBUG_HASH) return; // échec silencieux, aucun indice donné
+
+    afficherPanelDebug();
+}
+
+async function afficherPanelDebug() {
+    const saisie = prompt('Niveau (1-21) — laisser vide pour tout débloquer :');
+    if (saisie === null) return;
+
+    let niveauCible;
+    let niveauxCompletes;
+
+    if (saisie.trim() === '') {
+        // Tout débloquer d'un coup
+        niveauCible = 21;
+        niveauxCompletes = Array.from({ length: 21 }, (_, i) => i + 1);
+    } else {
+        niveauCible = parseInt(saisie);
+        if (!niveauCible || niveauCible < 1 || niveauCible > 21) return;
+        niveauxCompletes = [];
+        for (let i = 1; i < niveauCible; i++) niveauxCompletes.push(i);
+    }
+
+    const nouvelleSave = {
+        niveauActuel: niveauCible < 21 ? niveauCible : 21,
+        niveauxCompletes: niveauxCompletes,
+        viesHero: 3
+    };
+
+    try {
+        if (window.SaveSystem) {
+            await SaveSystem.saveAndWait(nouvelleSave);
+        } else {
+            localStorage.setItem('conjugoquest_save', JSON.stringify(nouvelleSave));
+        }
+    } catch (e) {
+        console.warn('Debug save échoué:', e.message);
+    }
+
+    window.location.href = `combat.html?niveau=${niveauCible}`;
 }

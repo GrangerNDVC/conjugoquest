@@ -41,6 +41,42 @@
         .audio-toggle {
             right: 20px !important;
         }
+
+        /* Bouton et bulle indice */
+        #btn-indice {
+            display: none;
+            margin: 10px auto 0;
+            padding: 6px 18px;
+            font-size: 0.85em;
+            font-family: 'Cinzel', serif;
+            background: rgba(251, 191, 36, 0.15);
+            border: 2px solid #fbbf24;
+            border-radius: 20px;
+            color: #fbbf24;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #btn-indice:hover:not(:disabled) {
+            background: rgba(251, 191, 36, 0.3);
+            transform: translateY(-1px);
+        }
+
+        #btn-indice:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        #indice-conjugaison {
+            display: none;
+            color: #fbbf24;
+            font-style: italic;
+            margin-top: 8px;
+            font-size: 0.85em;
+            max-width: 380px;
+            text-align: center;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -87,6 +123,11 @@
                 </div>
                 <input type="text" id="input-conjugaison" placeholder="Conjugue le verbe..." 
                        spellcheck="false" autocorrect="off" autocapitalize="none" autocomplete="off">
+
+                <!-- Bouton indice -->
+                <button id="btn-indice" onclick="afficherIndice()">💡 Indice</button>
+                <div id="indice-conjugaison"></div>
+
                 <button id="btn-valider-attaque" onclick="validerAttaque()">
                     🔮 LANCER L'INCANTATION
                 </button>

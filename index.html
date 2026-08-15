@@ -2,154 +2,695 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Godzilla : Protocole Titan</title>
-    <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conjugo Quest - Accueil</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Titre principal */
+        .main-title {
+            font-size: 4em;
+            color: #fbbf24;
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: text-shadow 0.3s;
+        }
+
+        .main-title:hover {
+            text-shadow: 0 0 50px rgba(251, 191, 36, 0.8);
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.3em;
+            margin-bottom: 50px;
+        }
+
+        /* Grille des modes de jeu */
+        .game-modes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+
+        .mode-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #8B4513;
+            border-radius: 20px;
+            padding: 40px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-10px);
+            border-color: #fbbf24;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .mode-card.aventure { border-color: #fbbf24; }
+        .mode-card.duel { border-color: #f43f5e; }
+
+        .mode-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .mode-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .mode-description {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+
+        /* Section connexion */
+        .login-section {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #fbbf24;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 400px;
+            margin: 0 auto 20px;
+        }
+
+        .login-section h2 {
+            color: #fbbf24;
+            margin-bottom: 20px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #8B4513;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1em;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #fbbf24;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(145deg, #fbbf24, #f59e0b);
+            color: #1a1a2e;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.5);
+        }
+
+        .btn-danger {
+            background: rgba(244, 67, 54, 0.2);
+            border: 2px solid #f44336;
+            color: #f44336;
+        }
+
+        .btn-danger:hover {
+            background: rgba(244, 67, 54, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-admin {
+            background: linear-gradient(145deg, #f43f5e, #c2185b);
+            color: white;
+        }
+
+        .btn-admin-cancel {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .guest-mode {
+            margin-top: 20px;
+            color: #94a3b8;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .guest-mode:hover {
+            color: #fbbf24;
+        }
+
+        /* Panneau Admin */
+        .admin-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-box {
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #f43f5e;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .admin-box h2 {
+            color: #f43f5e;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .admin-box input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #f43f5e;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1em;
+        }
+
+        .admin-box input:focus {
+            outline: none;
+            border-color: #ff1744;
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .admin-buttons button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .admin-panel {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #f43f5e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .admin-panel h3 {
+            color: #f43f5e;
+            margin-bottom: 15px;
+        }
+
+        .admin-user {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #8B4513;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .admin-user .user-info {
+            flex: 1;
+        }
+
+        .admin-user .user-name {
+            font-weight: bold;
+        }
+
+        .admin-user .user-progress {
+            color: #94a3b8;
+            font-size: 0.8em;
+        }
+
+        .admin-user button {
+            background: #f43f5e;
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .admin-user button:hover {
+            background: #ff1744;
+        }
+
+        .admin-error {
+            color: #f44336;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .admin-footer {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .admin-footer button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-delete-all {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-close {
+            background: #333;
+            color: white;
+        }
+
+        /* Quitter */
+        .quit-button {
+            margin-top: 20px;
+        }
+
+        /* Utilitaires */
+        .text-green { color: #4CAF50; }
+        .text-white { color: #fff; }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/save-system.js"></script>
 </head>
 <body>
-<div id="game-wrapper">
-    <div id="game-container">
-        <canvas id="gameCanvas" width="1100" height="700"></canvas>
-
-        <div id="palier-flash"></div>
-        <div id="combo-indicator"></div>
-
-        <div id="settings-btn" title="Réglages">⚙️</div>
-        <div id="settings-panel" class="hidden">
-            <label>
-                <input type="checkbox" id="chk-show-chrono">
-                Afficher le chrono ⏱️ pendant la partie
-            </label>
-            <button id="btn-reset-progress" class="secondary small">🗑️ Réinitialiser la progression</button>
-        </div>
-
-        <div id="phrase-area">
-            <div id="phrase-card">🦖 Chargement des Titans...</div>
-        </div>
-
-        <div id="stats-bar">
-            <div class="stat-item">
-                <span class="stat-label">📖 Chapitre</span>
-                <span class="stat-value" id="lbl-level">1</span>
+    <!-- Overlay Admin -->
+    <div id="adminOverlay" class="admin-overlay">
+        <div class="admin-box">
+            <h2>🔐 ADMIN</h2>
+            <input type="password" id="adminPassword" placeholder="Mot de passe admin" 
+                   onkeypress="if(event.key === 'Enter') Admin.checkPassword()">
+            <div class="admin-buttons">
+                <button class="btn-admin" onclick="Admin.checkPassword()">✓ Valider</button>
+                <button class="btn-admin-cancel" onclick="Admin.closeOverlay()">✕ Annuler</button>
             </div>
-            <div class="stat-item">
-                <span class="stat-label">⚔️ Duel</span>
-                <span class="stat-value" id="lbl-table" style="font-size:22px;">à / a</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">👹 Titan</span>
-                <span class="stat-value" id="lbl-kaiju" style="font-size:20px;">Rodan</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">🎯 Score</span>
-                <span class="stat-value" id="lbl-score">0</span>
-                <span id="lbl-score-max" style="font-size:18px; color:#ffb347;">/8</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">🏆 Points</span>
-                <span class="stat-value" id="lbl-points">0</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">💥 Fautes</span>
-                <span class="stat-value" id="lbl-errors" style="background:linear-gradient(135deg,#ff8888,#ff4444); -webkit-background-clip:text;">0</span>
-                <span style="font-size:18px; color:#ff8888;">/5</span>
-            </div>
-            <div id="chrono-box">⏱️ 00.0s</div>
-            <div id="burning-badge" class="hidden">🔥 BURNING</div>
-        </div>
-
-        <div id="start-screen" class="screen home-screen">
-            <div class="home-header">
-                <h1>🦖 GODZILLA : PROTOCOLE TITAN</h1>
-                <div id="loading-label">Chargement des images...</div>
-            </div>
-
-            <div class="home-main">
-                <div class="home-left">
-                    <div class="lore-box compact">
-                        <div class="lore-line"><span class="ico">🧪</span><span class="lore-text">D'anciens agents d'<b>Apex Cybernetics</b> ont libéré des Titans.</span></div>
-                        <div class="lore-line"><span class="ico">😡</span><span class="lore-text">Chacun cache un piège grammatical qui le rend incontrôlable.</span></div>
-                        <div class="lore-line"><span class="ico">🦖</span><span class="lore-text">MONARCH envoie Godzilla les neutraliser — ou les libérer. <b>Mothra</b>, elle, veille depuis toujours en silence.</span></div>
-                        <div class="lore-line"><span class="ico">✍️</span><span class="lore-text">Trouve le bon homophone pour viser juste et faire avancer l'histoire !</span></div>
-                    </div>
-                </div>
-
-                <div class="home-right">
-                    <div class="hero-frame">
-                        <img src="assets/presentation.png" alt="Godzilla" class="hero-img" onerror="this.style.display='none'">
-                        <div class="hero-fade"></div>
-                    </div>
-                    <div class="home-tabs">
-                        <button class="tab-btn" id="btn-rules">📜 Règles du jeu</button>
-                        <button class="tab-btn" id="btn-codex">🗂️ Dossiers Monarch</button>
-                        <button class="tab-btn" id="btn-medals">🎖️ Rangs de Godzilla</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="home-footer">
-                <button id="btn-start" disabled>🦖 Commencer le chapitre 1</button>
-                <div class="levels-track" id="levels-track"></div>
-            </div>
-        </div>
-
-        <div id="chapter-screen" class="screen hidden">
-            <div class="chapter-eyebrow" id="chapter-eyebrow">Chapitre 1 · Rodan</div>
-            <h1 id="chapter-title">Titre du chapitre</h1>
-            <p id="chapter-text"></p>
-            <div>
-                <button id="btn-chapter-continue">Continuer</button>
-                <button id="btn-chapter-retry" class="secondary hidden">🔁 Recommencer ce chapitre</button>
-                <button id="btn-chapter-menu" class="secondary hidden">🏠 Menu</button>
-            </div>
-        </div>
-
-        <div id="codex-screen" class="screen hidden">
-            <h1>🗂️ Dossiers Monarch</h1>
-            <p>Les Titans déjà rencontrés, avec leur sort final. Clique sur un dossier révélé pour rejouer ce chapitre.</p>
-            <div class="codex-grid" id="codex-grid"></div>
-            <button id="btn-codex-back" class="secondary">↩️ Retour au menu</button>
-        </div>
-
-        <div id="rules-screen" class="screen hidden">
-            <h1>📜 Règles du jeu</h1>
-            <div class="lore-box">
-                <div class="lore-line"><span class="ico">💥</span><span class="lore-text">5 erreurs sur un chapitre = le Titan s'échappe.</span></div>
-                <div class="lore-line"><span class="ico">⚡</span><span class="lore-text">Réponds vite et sans faute : gros bonus de points !</span></div>
-                <div class="lore-line"><span class="ico">🦋</span><span class="lore-text">3 bonnes réponses d'affilée : <b>Mothra</b> efface une faute, à tout moment de l'histoire — elle n'est jamais un adversaire, juste une gardienne bienveillante.</span></div>
-                <div class="lore-line"><span class="ico">🔥</span><span class="lore-text">Enchaîne des chapitres rapides et propres pour déclencher le mode Burning — plus de points à chaque tir !</span></div>
-                <div class="lore-line"><span class="ico">👹</span><span class="lore-text">Le Titan apparaît derrière les rochers quand la fin du chapitre approche.</span></div>
-                <div class="lore-line"><span class="ico">🔓</span><span class="lore-text">Termine un chapitre pour débloquer le suivant et le retrouver dans les Dossiers Monarch.</span></div>
-            </div>
-            <button id="btn-rules-back" class="secondary">↩️ Retour au menu</button>
-        </div>
-
-        <div id="medals-screen" class="screen hidden">
-            <h1>🎖️ Rangs de Godzilla</h1>
-            <p id="medals-progress">Continue à enchaîner les chapitres rapides et propres pour faire progresser ton rang de Godzilla !</p>
-            <div class="medal-grid" id="medal-grid"></div>
-            <button id="btn-medals-back" class="secondary">↩️ Retour au menu</button>
-        </div>
-
-        <div id="end-screen" class="screen hidden">
-            <h1 id="end-title">Fin de partie</h1>
-            <p id="end-desc"></p>
-            <div>
-                <button id="btn-retry-level" class="hidden">🔁 Réessayer ce chapitre</button>
-                <button id="btn-restart-all" class="secondary hidden">↩️ Repartir du chapitre 1</button>
-                <button id="btn-play-again" class="hidden">✨ Rejouer</button>
-                <button id="btn-menu" class="secondary hidden">🏠 Menu</button>
-            </div>
+            <div id="adminError" class="admin-error"></div>
         </div>
     </div>
-</div>
 
-<div id="custom-cursor">
-    <div class="crosshair-ring"></div>
-    <div class="crosshair-dot"></div>
-</div>
+    <div class="container">
+        <h1 class="main-title" onclick="void(0)" style="display:none">CONJUGO QUEST</h1>
+        <div class="subtitle">Le combat ultime de la conjugaison</div>
 
-<script src="game.js"></script>
+        <!-- Modes de jeu -->
+        <div class="game-modes">
+            <div class="mode-card aventure" onclick="Game.launchMode('aventure')">
+                <div class="mode-icon">⚔️</div>
+                <div class="mode-name">AVENTURE</div>
+                <div class="mode-description">Affronte les 21 gardiens des tours</div>
+            </div>
+            
+            <div class="mode-card duel" onclick="Game.launchMode('duel')">
+                <div class="mode-icon">⚔️👥</div>
+                <div class="mode-name">DUEL / ARÈNE</div>
+                <div class="mode-description">Affronte d'autres joueurs en ligne</div>
+            </div>
+        </div>
+
+        <!-- Connexion -->
+        <div class="login-section">
+            <h2>🔐 Connexion</h2>
+            <div class="login-form">
+                <input type="text" id="pseudo" placeholder="Ton pseudo de héros" value="Héros" maxlength="20">
+                <button class="btn btn-primary" onclick="Auth.login()">🛡️ SE CONNECTER</button>
+            </div>
+            <div class="guest-mode" onclick="Auth.guest()">
+                Continuer en mode invité
+            </div>
+        </div>
+        
+        <!-- Panneau Admin -->
+        <div id="adminPanel" class="admin-panel"></div>
+        
+        <!-- Quitter -->
+        <div class="quit-button">
+            <button class="btn btn-danger" onclick="Game.quit()">
+                🚪 Quitter le jeu
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Constantes
+        const CONSTANTS = {
+            ADMIN_HASH: "6e93fd13f4678a6ddd4c9f8e378e882a72b403301011d8cf3a580d5d65214fa9",
+            BANNED_WORDS: ['connard', 'salope', 'pute', 'enculé', 'fdp', 'ntm', 'pd', 'bitch', 'fuck', 'shit']
+        };
+
+        // Hash SHA-256 via API native du navigateur (impossible à inverser)
+        async function hashPassword(str) {
+            const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+        }
+
+        // Storage Manager
+        const Storage = {
+            getPlayers() {
+                return JSON.parse(localStorage.getItem('conjugoquest_players') || '[]');
+            },
+
+            savePlayers(players) {
+                localStorage.setItem('conjugoquest_players', JSON.stringify(players));
+            },
+
+            getCurrentPlayer() {
+                return localStorage.getItem('conjugoquest_current_player');
+            },
+
+            setCurrentPlayer(playerId) {
+                localStorage.setItem('conjugoquest_current_player', playerId);
+            },
+
+            getPlayerName() {
+                return localStorage.getItem('conjugoquest_player_name') || 'Invité';
+            },
+
+            setPlayerName(name) {
+                localStorage.setItem('conjugoquest_player_name', name);
+            },
+
+            getSave() {
+                return JSON.parse(localStorage.getItem('conjugoquest_save') || 'null');
+            },
+
+            setSave(save) {
+                localStorage.setItem('conjugoquest_save', JSON.stringify(save));
+            },
+
+            removeCurrentPlayer() {
+                localStorage.removeItem('conjugoquest_current_player');
+            }
+        };
+
+        // Gestionnaire d'authentification
+        const Auth = {
+            isPseudoInappropriate(pseudo) {
+                const lower = pseudo.toLowerCase();
+                return CONSTANTS.BANNED_WORDS.some(mot => lower.includes(mot));
+            },
+
+            async login() {
+                const pseudo = document.getElementById('pseudo').value.trim();
+
+                if (!pseudo) { alert("Entre un pseudo !"); return; }
+
+                if (this.isPseudoInappropriate(pseudo)) {
+                    if (!confirm("⚠️ Ce pseudo pourrait être inapproprié. Veux-tu quand même continuer ?")) return;
+                }
+
+                const btn = document.querySelector('[onclick="Auth.login()"]');
+                if (btn) { btn.disabled = true; btn.textContent = '⏳ Connexion...'; }
+
+                // Connexion via Firestore (source de vérité multi-appareils)
+                const result = await SaveSystem.connecterParPseudo(pseudo);
+
+                if (result.success) {
+                    const destination = result.isReturning ? 'map.html' : 'intro.html';
+                    window.location.href = destination;
+                } else {
+                    alert("❌ Erreur de connexion. Réessaie.");
+                    if (btn) { btn.disabled = false; btn.textContent = '🛡️ SE CONNECTER'; }
+                }
+            },
+
+            guest() {
+                Storage.setPlayerName('Invité');
+                Storage.setSave({
+                    niveauActuel: 1,
+                    niveauxCompletes: [],
+                    viesHero: 3
+                });
+                window.location.href = 'intro.html';
+            }
+        };
+
+        // Gestionnaire du jeu
+        const Game = {
+            launchMode(mode) {
+                if (!Storage.getPlayerName()) {
+                    alert("Connecte-toi d'abord !");
+                    return;
+                }
+                
+                const pages = {
+                    aventure: 'intro.html',
+                    duel: 'duel.html'
+                };
+                
+                window.location.href = pages[mode] || 'intro.html';
+            },
+
+            async quit() {
+                if (confirm("🚪 Quitter le jeu ?\n(La progression sera sauvegardée)")) {
+                    if (window.SaveSystem) await SaveSystem.deconnecter();
+                    window.location.href = 'index.html';
+                }
+            }
+        };
+
+        // Gestionnaire Admin
+        const Admin = {
+            showOverlay() {
+                document.getElementById('adminOverlay').style.display = 'flex';
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminError').textContent = '';
+            },
+
+            closeOverlay() {
+                document.getElementById('adminOverlay').style.display = 'none';
+            },
+
+            async checkPassword() {
+                const password = document.getElementById('adminPassword').value;
+                const hash = await hashPassword(password);
+
+                if (hash === CONSTANTS.ADMIN_HASH) {
+                    this.closeOverlay();
+                    this.showPanel();
+                } else {
+                    document.getElementById('adminError').textContent = '❌ Mot de passe incorrect';
+                    document.getElementById('adminPassword').value = '';
+                }
+            },
+
+            async showPanel() {
+                const panel = document.getElementById('adminPanel');
+                panel.innerHTML = '<p style="color:#fbbf24;">⏳ Chargement depuis Firestore...</p>';
+                panel.style.display = 'block';
+
+                try {
+                    if (!window.FirebaseDB) throw new Error("Firebase non disponible");
+
+                    const snapshot = await window.FirebaseDB.collection('joueurs').orderBy('pseudo').get();
+
+                    if (snapshot.empty) {
+                        panel.innerHTML = '<p style="color:#94a3b8;">Aucun joueur enregistré</p>';
+                        return;
+                    }
+
+                    let html = '<h3>👥 Gestion des joueurs (' + snapshot.size + ')</h3>';
+
+                    snapshot.forEach(doc => {
+                        const d = doc.data();
+                        const niveaux = d.progression?.niveauxCompletes?.length || 0;
+                        const derniere = d.derniereConnexion?.toDate?.()?.toLocaleDateString('fr-FR') || '—';
+                        html += `
+                            <div class="admin-user">
+                                <div class="user-info">
+                                    <div class="user-name text-white">${d.pseudo || '?'}</div>
+                                    <div class="user-progress">${niveaux}/21 niveaux · ${derniere}</div>
+                                </div>
+                                <div style="display:flex;gap:5px;">
+                                    <button onclick="Admin.voirHistorique('${doc.id}', '${d.pseudo || '?'}')">🔍</button>
+                                    <button onclick="Admin.deletePlayerFirestore('${doc.id}', '${d.pseudo}')">🗑️</button>
+                                </div>
+                            </div>`;
+                    });
+
+                    html += `
+                        <div class="admin-footer">
+                            <button class="btn-close" onclick="Admin.hidePanel()">✕ Fermer</button>
+                        </div>`;
+
+                    panel.innerHTML = html;
+
+                } catch(e) {
+                    panel.innerHTML = '<p style="color:#f87171;">❌ Erreur : ' + e.message + '</p>';
+                }
+            },
+
+            async voirHistorique(docId, pseudo) {
+                try {
+                    const snap = await window.FirebaseDB.collection('joueurs').doc(docId)
+                        .collection('historique').orderBy('completeLe').get();
+
+                    if (snap.empty) {
+                        alert(pseudo + " — Aucun historique enregistré (niveaux complétés avant la mise à jour)");
+                        return;
+                    }
+
+                    let msg = "📊 Historique de " + pseudo + "\n\n";
+                    let dernierTimestamp = null;
+                    let suspicious = false;
+
+                    snap.forEach(doc => {
+                        const d = doc.data();
+                        const date = d.completeLe?.toDate?.();
+                        const dateStr = date ? date.toLocaleString('fr-FR') : '?';
+
+                        if (dernierTimestamp && date) {
+                            const diffMin = (date - dernierTimestamp) / 60000;
+                            const alerte = diffMin < 2 ? " ⚠️ (" + diffMin.toFixed(1) + "min)" : "";
+                            if (diffMin < 2) suspicious = true;
+                            msg += "Niveau " + d.niveau + " — " + dateStr + alerte + "\n";
+                        } else {
+                            msg += "Niveau " + d.niveau + " — " + dateStr + "\n";
+                        }
+                        if (date) dernierTimestamp = date;
+                    });
+
+                    if (suspicious) msg += "\n⚠️ Certains niveaux ont été complétés en moins de 2 minutes — triche probable.";
+
+                    alert(msg);
+                } catch(e) {
+                    alert("Erreur : " + e.message);
+                }
+            },
+
+            async deletePlayerFirestore(docId, pseudo) {
+                if (!confirm("Supprimer définitivement " + pseudo + " ?")) return;
+                try {
+                    await window.FirebaseDB.collection('joueurs').doc(docId).delete();
+                    this.showPanel();
+                    alert("✅ " + pseudo + " supprimé !");
+                } catch(e) {
+                    alert("Erreur suppression : " + e.message);
+                }
+            },
+
+            hidePanel() {
+                document.getElementById('adminPanel').style.display = 'none';
+            },
+
+            deletePlayer(playerId) {
+                if (!confirm("⚠️ Supprimer définitivement ce joueur ?")) return;
+                
+                let players = Storage.getPlayers();
+                const index = players.findIndex(p => p.id === playerId);
+                
+                if (index >= 0) {
+                    players.splice(index, 1);
+                    Storage.savePlayers(players);
+                    
+                    if (Storage.getCurrentPlayer() === playerId) {
+                        if (players.length > 0) {
+                            Storage.setCurrentPlayer(players[0].id);
+                            Storage.setPlayerName(players[0].name);
+                            Storage.setSave(players[0].save);
+                        } else {
+                            Storage.removeCurrentPlayer();
+                            Auth.guest();
+                            return;
+                        }
+                    }
+                    
+                    this.showPanel();
+                    alert("✅ Joueur supprimé !");
+                }
+            },
+
+            deleteAll() {
+                if (!confirm("⚠️⚠️⚠️ SUPPRIMER TOUS LES JOUEURS ?\nCette action est irréversible !")) return;
+                
+                localStorage.removeItem('conjugoquest_players');
+                localStorage.removeItem('conjugoquest_current_player');
+                Auth.guest();
+            }
+        };
+
+        // Fermer l'overlay admin si on clique en dehors
+        window.onclick = function(event) {
+            const overlay = document.getElementById('adminOverlay');
+            if (event.target === overlay) {
+                Admin.closeOverlay();
+            }
+        };
+    </script>
 </body>
 </html>

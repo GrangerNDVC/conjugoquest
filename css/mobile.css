@@ -1,0 +1,209 @@
+/* ===========================================================
+   CONJUGO QUEST — ADAPTATION SMARTPHONE
+   À charger EN DERNIER (après main.css + le css de la page)
+   sur : index.html, login.html, intro.html, map.html, combat.html,
+         duel.html, classements.html
+   =========================================================== */
+
+/* -----------------------------------------------------------
+   0. Hauteur réelle du viewport (barre d'adresse mobile)
+   -> nécessite js/mobile-utils.js qui définit --vh
+   ----------------------------------------------------------- */
+:root {
+    --vh: 1vh; /* valeur de secours tant que le JS n'a pas tourné */
+}
+
+/* -----------------------------------------------------------
+   1. Anti-zoom iOS : tout champ de saisie doit faire >= 16px,
+      sinon Safari zoome automatiquement au focus
+   ----------------------------------------------------------- */
+input, select, textarea, button {
+    font-size: 16px;
+}
+
+/* -----------------------------------------------------------
+   2. Cibles tactiles : 44x44px minimum (recommandation Apple/Google)
+   ----------------------------------------------------------- */
+button,
+.tab,
+.reponse-btn,
+.level-btn,
+.invite-btn,
+.btn-mode,
+.character-option,
+.online-player-card .invite-btn {
+    min-height: 44px;
+    touch-action: manipulation; /* supprime le délai de 300ms au tap */
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* -----------------------------------------------------------
+   3. Support des zones encoche / barre de gestes (iPhone)
+   ----------------------------------------------------------- */
+.btn-quitter,
+.audio-toggle,
+#music-toggle {
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+#map-ui .ui-top,
+.duel-header {
+    padding-top: calc(16px + env(safe-area-inset-top, 0px));
+}
+
+/* ===========================================================
+   COMBAT — écran le plus sensible au clavier virtuel
+   =========================================================== */
+@media (max-width: 768px) {
+
+    /* La zone de saisie reste collée en haut : le clavier ne peut
+       jamais la recouvrir, quelle que soit la hauteur du clavier */
+    #zone-input-attaque {
+        top: calc(env(safe-area-inset-top, 0px) + 8px) !important;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100vw - 24px);
+        max-width: 420px;
+        padding: 14px 16px !important;
+    }
+
+    #input-conjugaison {
+        width: 100%;
+        font-size: 16px !important;
+        padding: 12px 14px !important;
+    }
+
+    #btn-valider-attaque {
+        padding: 10px 24px !important;
+        font-size: 1.05em !important;
+    }
+
+    /* QCM de défense : plein écran quasi, boutons larges pour le doigt */
+    #zone-defense {
+        top: 8%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100vw - 28px);
+        max-width: 480px;
+        padding: 20px !important;
+    }
+
+    #question-defense {
+        font-size: 1.15em;
+    }
+
+    .reponse-btn {
+        padding: 14px 18px;
+        font-size: 1.05em;
+    }
+
+    /* Cercle magique : allégé et réduit pour tenir sur l'écran + perf */
+    #zone-incantation {
+        left: 8px !important;
+        bottom: 90px !important;
+        width: calc(100vw - 16px) !important;
+    }
+
+    .cercle-magique {
+        width: 260px !important;
+        height: 260px !important;
+        transform: scale(0.85);
+    }
+
+    .ellipse-1 { width: 240px !important; height: 240px !important; }
+    .ellipse-2 { width: 220px !important; height: 220px !important; }
+    .ellipse-3 { width: 200px !important; height: 200px !important; }
+    .ellipse-4 { width: 180px !important; height: 180px !important; }
+
+    .centre-incantation {
+        width: 170px !important;
+        height: 170px !important;
+        padding: 18px !important;
+    }
+
+    #incantation-text {
+        font-size: 1em !important;
+        max-width: 150px !important;
+    }
+
+    /* Particules : coûteuses en rendu, inutiles sur petit écran */
+    .particule-magique {
+        display: none;
+    }
+
+    /* Héros / tour / ennemi : rééquilibrage des tailles */
+    #hero-combat { width: 70px !important; left: 8px !important; bottom: 8px !important; }
+    #ennemi-combat { width: 130px !important; height: 130px !important; }
+    #barre-vie-tour { width: 200px !important; top: 12px !important; right: 12px !important; }
+
+    #ui-joueur { top: 12px !important; left: 12px !important; }
+    #vies-joueur { font-size: 1.6em !important; padding: 6px 10px !important; }
+
+    .titre-niveau { font-size: 1.8em !important; }
+    .dialogue-bottom { font-size: 1.05em !important; padding: 15px 20px !important; max-width: calc(100vw - 32px) !important; }
+    .btn-combat { padding: 14px 32px !important; font-size: 1.2em !important; }
+}
+
+/* ===========================================================
+   CARTE — plateau tactile
+   =========================================================== */
+@media (max-width: 768px) {
+    #carte-container {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+
+    #hero-chibi { width: 50px; }
+
+    .tour-container { width: 100px; height: 100px; }
+    .tour-image { width: 100px; height: 100px; }
+
+    .portail-duel { width: 54px; height: 54px; }
+    .portail-arena { width: 74px; height: 74px; }
+
+    #btn-retour-menu {
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+        left: 16px;
+        padding: 10px 18px;
+    }
+}
+
+/* ===========================================================
+   DUEL — combat 1v1
+   =========================================================== */
+@media (max-width: 768px) {
+    #question-zone {
+        width: calc(100vw - 24px) !important;
+        top: 110px !important;
+    }
+
+    #duel-cercle-hero, #duel-cercle-gardien {
+        width: 110px !important;
+        height: 110px !important;
+    }
+
+    #duel-cercle { width: 160px !important; height: 160px !important; }
+
+    #player1-combat-img, #player2-combat-img {
+        width: 90px !important;
+    }
+}
+
+/* ===========================================================
+   PETITS ÉCRANS (< 400px de large)
+   =========================================================== */
+@media (max-width: 400px) {
+    .titre-niveau { font-size: 1.5em !important; }
+    #vies-joueur { font-size: 1.3em !important; }
+    #barre-vie-tour { width: 160px !important; }
+    .cercle-magique { width: 220px !important; height: 220px !important; }
+}
+
+/* ===========================================================
+   MODE PAYSAGE court (téléphone tenu à l'horizontale)
+   =========================================================== */
+@media (max-height: 420px) and (orientation: landscape) {
+    #zone-incantation { display: none !important; } /* priorité à la lisibilité du texte */
+    #zone-defense { top: 4% !important; max-height: 90vh; overflow-y: auto; }
+    .titre-niveau { font-size: 1.3em !important; top: 8px !important; }
+}

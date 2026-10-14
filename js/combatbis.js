@@ -17,6 +17,7 @@ let indexDefense = 0;
 
 let questionActuelle = null;
 let enDefense = false;
+let attaqueVerrouillee = false; // empêche les validations multiples (spam Entrée)
 
 // ===========================
 // CHARGER / SAUVEGARDER VIA SaveSystem (source unique de vérité)
@@ -724,6 +725,7 @@ function demarrerCombat() {
 
 function afficherQuestionAttaque() {
     enDefense = false;
+    attaqueVerrouillee = false; // nouvelle question : on déverrouille
     questionActuelle = getQuestionAttaque();
     
     const numeroFormatte = String(niveauActuel).padStart(2, '0');
@@ -770,6 +772,10 @@ function afficherQuestionAttaque() {
 }
 
 function validerAttaque() {
+    // Une seule validation par question d'attaque
+    if (attaqueVerrouillee || enDefense || !questionActuelle) return;
+    attaqueVerrouillee = true;
+
     const reponse = document.getElementById('input-conjugaison')?.value.trim().toLowerCase() || '';
     const solution = questionActuelle.solution.toLowerCase();
     
@@ -787,6 +793,8 @@ function validerAttaque() {
         
         const zoneInput = document.getElementById('zone-input-attaque');
         if (zoneInput) zoneInput.style.display = 'none';
+        const inputEl = document.getElementById('input-conjugaison');
+        if (inputEl) inputEl.value = '';
         
         setTimeout(() => {
             lancerParticuleAttaque(questionActuelle.solution);

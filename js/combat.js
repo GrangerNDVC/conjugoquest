@@ -1,6 +1,5 @@
 // ===========================
 // CONJUGO QUEST - SYSTÈME DE COMBAT CORRIGÉ
-// (+ système d'indice pour les attaques)
 // ===========================
 
 let donneesNiveau = null;
@@ -18,9 +17,7 @@ let indexDefense = 0;
 
 let questionActuelle = null;
 let enDefense = false;
-
-// Indice : true si l'élève a cliqué sur 💡 pour la question d'attaque en cours
-let indiceUtiliseCeTour = false;
+let attaqueVerrouillee = false; // empêche les validations multiples (spam Entrée)
 
 // ===========================
 // CHARGER / SAUVEGARDER VIA SaveSystem (source unique de vérité)
@@ -700,6 +697,7 @@ function demarrerCombat() {
 
 function afficherQuestionAttaque() {
     enDefense = false;
+    attaqueVerrouillee = false; // nouvelle question : on déverrouille
     questionActuelle = getQuestionAttaque();
     
     const numeroFormatte = String(niveauActuel).padStart(2, '0');
@@ -743,42 +741,13 @@ function afficherQuestionAttaque() {
         input.value = '';
         input.focus();
     }
-
-    // ===== Indice : afficher le bouton seulement si la question en fournit un =====
-    const btnIndice = document.getElementById('btn-indice');
-    const indiceDiv = document.getElementById('indice-conjugaison');
-    if (indiceDiv) { indiceDiv.style.display = 'none'; indiceDiv.textContent = ''; }
-    if (btnIndice) {
-        btnIndice.style.display = questionActuelle.indice ? 'block' : 'none';
-        btnIndice.disabled = false;
-        btnIndice.style.opacity = '1';
-    }
-    indiceUtiliseCeTour = false;
-}
-
-// Affiche l'indice de la question d'attaque en cours.
-// Un seul indice par question ; son usage neutralise le bonus combo
-// (voir validerAttaque) mais ne coûte ni vie ni pénalité directe.
-function afficherIndice() {
-    if (!questionActuelle || !questionActuelle.indice) return;
-
-    const indiceDiv = document.getElementById('indice-conjugaison');
-    const btn = document.getElementById('btn-indice');
-
-    if (indiceDiv) {
-        indiceDiv.textContent = '💡 ' + questionActuelle.indice;
-        indiceDiv.style.display = 'block';
-    }
-
-    indiceUtiliseCeTour = true;
-
-    if (btn) {
-        btn.disabled = true;
-        btn.style.opacity = '0.4';
-    }
 }
 
 function validerAttaque() {
+    // Une seule validation par question d'attaque
+    if (attaqueVerrouillee || enDefense || !questionActuelle) return;
+    attaqueVerrouillee = true;
+
     const reponse = document.getElementById('input-conjugaison')?.value.trim().toLowerCase() || '';
     const solution = questionActuelle.solution.toLowerCase();
     
@@ -796,6 +765,8 @@ function validerAttaque() {
         
         const zoneInput = document.getElementById('zone-input-attaque');
         if (zoneInput) zoneInput.style.display = 'none';
+        const inputEl = document.getElementById('input-conjugaison');
+        if (inputEl) inputEl.value = '';
         
         setTimeout(() => {
             lancerParticuleAttaque(questionActuelle.solution);
@@ -814,20 +785,14 @@ function validerAttaque() {
                     setTimeout(() => ennemi.classList.remove('touche'), 500);
                 }
                 
-                // Le bonus combo est neutralisé si l'élève a utilisé l'indice sur ce tour :
-                // il progresse quand même, mais sans le bonus réservé à la maîtrise directe.
-                if (!indiceUtiliseCeTour) {
-                    combo++;
-                    if (combo >= 5) {
-                        if (viesJoueur < 3) {
-                            viesJoueur++;
-                            mettreAJourVies();
-                            sauvegarderVies(); // SAUVEGARDE LES VIES
-                            afficherMessage("🔥 COMBO ! +1 ❤️", 'success');
-                        }
-                        combo = 0;
+                combo++;
+                if (combo >= 5) {
+                    if (viesJoueur < 3) {
+                        viesJoueur++;
+                        mettreAJourVies();
+                        sauvegarderVies(); // SAUVEGARDE LES VIES
+                        afficherMessage("🔥 COMBO ! +1 ❤️", 'success');
                     }
-                } else {
                     combo = 0;
                 }
                 mettreAJourCombo();
